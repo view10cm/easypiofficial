@@ -294,20 +294,14 @@
     <div id="chatbot-container"></div>
 </body>
 <script>
-  fetch('header.html')
+  fetch('header.php')
     .then(res => res.text())
     .then(html => {
       document.getElementById('navbar-container').innerHTML = html;
     });
 
   // Load Sidebar
-  fetch('sidebar.html')
-    .then(res => res.text())
-    .then(html => {
-      document.getElementById('sidebar-container').innerHTML = html;
-    });
-
-   fetch('chatbot.php')
+  fetch('sidebar.php')
     .then(res => res.text())
     .then(html => {
       document.getElementById('sidebar-container').innerHTML = html;
@@ -328,5 +322,5 @@
 </script>
 
 <!-- Before </body> -->
-<script type="module" src="chatbot.js"></script>
+<script type="module" src="../scripts/chatbot.js"></script>
 </html>
