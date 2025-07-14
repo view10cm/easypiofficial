@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign Up Form</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Trebuchet MS', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #1286cc, #ebb915);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .background-pattern {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('../assets/register-background.png') no-repeat center center fixed;
+      z-index: 1;
+    }
+
+    .signup-container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      max-width: 900px;
+      width: 100%;
+      margin: 20px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .row {
+      margin: 0;
+    }
+
+    .left-side {
+      background: #f8f9fa;
+      padding: 60px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .left-side img {
+      width: 500px;
+      height: auto;
+    }
+
+    .right-side {
+      padding: 60px 50px;
+      background: white;
+    }
+
+    .form-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #1286cc;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .form-control {
+      border: 2px solid #ccc;
+      border-radius: 12px;
+      padding: 15px 20px 15px 50px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background: #f8f9fa;
+    }
+
+    .form-control:focus {
+      border-color: #1286cc;
+      box-shadow: 0 0 0 0.2rem rgba(18, 134, 204, 0.25);
+      background: white;
+    }
+
+    .form-icon {
+      position: absolute;
+      left: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #6c757d;
+      font-size: 1.1rem;
+    }
+
+    .btn-register {
+      background: linear-gradient(135deg, #1286cc, #ebb915);
+      border: none;
+      border-radius: 12px;
+      padding: 15px 30px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: white;
+      width: 100%;
+      margin-top: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .btn-register:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(18, 134, 204, 0.4);
+      background: linear-gradient(135deg, #0c6ca1, #e3a812);
+    }
+
+    .form-check {
+      margin: 1.5rem 0;
+    }
+
+    .form-check-input {
+      border: 2px solid #e0e0e0;
+      border-radius: 4px;
+    }
+
+    .form-check-input:checked {
+      background-color: #ebb915;
+      border-color: #ebb915;
+    }
+
+    .signin-link {
+      text-align: center;
+      margin-top: 1.5rem;
+      color: #6c757d;
+    }
+
+    .signin-link a {
+      color: #1286cc;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .signin-link a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+      .left-side {
+        display: none;
+      }
+
+      .signup-container {
+        margin: 10px;
+      }
+
+      .right-side {
+        padding: 40px 30px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="background-pattern"></div>
+
+  <div class="signup-container">
+    <div class="row g-0">
+      <div class="col-lg-5 left-side d-none d-lg-flex">
+        <img src="../assets/easypi.png" alt="Illustration" class="left-side-img">
+      </div>
+      <div class="col-lg-7 right-side">
+        <h2 class="form-title">Sign Up</h2>
+        <form id="signupForm">
+          <div class="form-group">
+            <i class="fas fa-user-circle form-icon"></i>
+            <input type="text" class="form-control" id="username" name="username" placeholder="Enter Username" required>
+          </div>
+          <div class="form-group">
+            <i class="fas fa-envelope form-icon"></i>
+            <input type="email" class="form-control" id="email" name="email" placeholder="Enter Email" required>
+          </div>
+          <div class="form-group">
+            <i class="fas fa-lock form-icon"></i>
+            <input type="password" class="form-control" id="password" name="password" placeholder="Enter Password" required>
+          </div>
+          <div class="form-group">
+            <i class="fas fa-lock form-icon"></i>
+            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="agreeTerms" required>
+            <label class="form-check-label" for="agreeTerms">I agree to all terms</label>
+          </div>
+          <button type="submit" class="btn btn-register" id="registerBtn">Register</button>
+          <div class="signin-link">
+            Already have an account? <a href="sign-in.html">Sign In</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+  <script>
+document.getElementById('signupForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const registerBtn = document.getElementById('registerBtn');
+    registerBtn.disabled = true;
+    registerBtn.textContent = 'Registering...';
+
+    const username = document.getElementById('username').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    const agreeTerms = document.getElementById('agreeTerms').checked;
+
+    function resetButton() {
+      registerBtn.disabled = false;
+      registerBtn.textContent = 'Register';
+    }
+
+    // Required fields
+    if (!username || !email || !password || !confirmPassword) {
+      alert('All fields are required.');
+      return resetButton();
+    }
+
+    // Username validation
+    if (username.startsWith(' ') || /\s/.test(username)) {
+      alert('Username cannot start with or contain spaces.');
+      return resetButton();
+    }
+    const usernameRegex = /^[a-zA-Z0-9_]{4,20}$/;
+    if (!usernameRegex.test(username)) {
+      alert('Username must be 4–20 characters and only use letters, numbers, or underscores.');
+      return resetButton();
+    }
+
+    // Email validation
+    if (email.startsWith(' ') || /\s/.test(email)) {
+      alert('Email cannot start with or contain spaces.');
+      return resetButton();
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      alert('Enter a valid email address.');
+      return resetButton();
+    }
+
+    // Password checks
+    if (password !== confirmPassword) {
+      alert('Passwords do not match.');
+      return resetButton();
+    }
+
+    if (!agreeTerms) {
+      alert('You must agree to the terms.');
+      return resetButton();
+    }
+
+    const passwordStrengthRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+    if (!passwordStrengthRegex.test(password)) {
+      alert('Password must have at least 8 characters, one uppercase letter, one number, and one special character.');
+      return resetButton();
+    }
+
+    const formData = new FormData();
+    formData.append('username', username.trim());
+    formData.append('email', email.trim());
+    formData.append('password', password);
+
+    try {
+      const response = await fetch('../includes/register_account.php', {
+        method: 'POST',
+        body: formData
+      });
+
+      const result = await response.json();
+      console.log(result);
+
+      if (result.success) {
+        registerBtn.textContent = 'Redirecting...';
+        setTimeout(() => {
+          window.location.href = 'sign_in.html?registered=1';
+        }, 3000);
+      } else {
+        // Reset form only if it's a duplicate username or email
+        const duplicateMessage = 'Username or email already exists.';
+        if (result.message && result.message.toLowerCase().includes('exists')) {
+          document.getElementById('signupForm').reset();
+        }
+        alert(result.message);
+        resetButton();
+      }
+    } catch (error) {
+      console.error(error);
+      alert('An error occurred during registration.');
+      resetButton();
+    }
+  });
+</script>
+</body>
+</html>
