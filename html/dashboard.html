@@ -147,6 +147,10 @@
                                                 <span class="fw-bold text-danger">To-Do</span>
                                                 <span class="text-muted ms-2">20 June - Today</span>
                                             </div>
+                                            <a href="#" class="text-danger fw-semibold" data-bs-toggle="modal"
+                                                data-bs-target="#addTaskModal">
+                                                <i class="bi bi-plus-circle"></i> Add task
+                                            </a>
                                         </div>
                                         <!-- Task Cards -->
                                         <div class="mb-3">
@@ -284,59 +288,10 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Add Task Modal -->
-            <div class="modal fade" id="addTaskModal" tabindex="-1" aria-labelledby="addTaskModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <form>
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="addTaskModalLabel">Add New Task</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="mb-3">
-                                    <label for="taskTitle" class="form-label">Task Title</label>
-                                    <input type="text" class="form-control" id="taskTitle" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="taskDescription" class="form-label">Description</label>
-                                    <textarea class="form-control" id="taskDescription" rows="3"></textarea>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="taskPriority" class="form-label">Priority</label>
-                                    <select class="form-select" id="taskPriority">
-                                        <option>Low</option>
-                                        <option selected>Moderate</option>
-                                        <option>High</option>
-                                    </select>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="taskStatus" class="form-label">Status</label>
-                                    <select class="form-select" id="taskStatus">
-                                        <option selected>Not Started</option>
-                                        <option>In Progress</option>
-                                        <option>Completed</option>
-                                    </select>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="taskDate" class="form-label">Due Date</label>
-                                    <input type="date" class="form-control" id="taskDate">
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                <button type="submit" class="btn btn-danger">Add Task</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
     </div>
+    <div id="chatbot-container"></div>
 </body>
 <script>
   fetch('header.php')
@@ -351,5 +306,21 @@
     .then(html => {
       document.getElementById('sidebar-container').innerHTML = html;
     });
+
+    fetch('../includes/chatbot.php')
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById('chatbot-container').innerHTML = html;
+    });
 </script>
+<script type="importmap">
+  {
+    "imports": {
+      "@google/generative-ai": "https://esm.run/@google/generative-ai"
+    }
+  }
+</script>
+
+<!-- Before </body> -->
+<script type="module" src="chatbot.js"></script>
 </html>
