@@ -1,0 +1,25 @@
+  .nav-tabs .nav-link:not(.active) {
+                        color: #ff6b6b !important;
+                    }
+                    .nav-tabs .nav-link:not(.active):hover {
+                        color: #ff6b6b !important;
+                        border-color: #ff6b6b;
+                    }
+                    .nav-tabs .nav-link.active {
+                        color: #495057 !important;
+                    }
+                    
+                    /* Make input fields half width */
+                    .tab-content .form-control {
+                        width: 50% !important;
+                        max-width: 400px !important;
+                    }
+                    
+                    /* Target specific input types */
+                    .tab-content input[type="text"],
+                    .tab-content input[type="email"],
+                    .tab-content input[type="tel"],
+                    .tab-content input[type="password"] {
+                        width: 50% !important;
+                        max-width: 400px !important;
+                    }

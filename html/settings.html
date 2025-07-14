@@ -7,8 +7,9 @@
     <meta name="viewport" content="width=], initial-scale=1.0">
     <title>EasyPi - Dashboard</title>
     <script></script>
-    <link rel="stylesheet" href="style.css">
-    <script src="script.js"></script>
+    <link rel="stylesheet" href="../styles/style.css">
+    <link rel="stylesheet" href="../styles/settings.css">
+    <script src="../scripts/settings.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
@@ -96,8 +97,112 @@
             </div>
         </aside>
         <!-- Main Content (add margin-left to avoid overlap) -->
-        <div style="margin-left:10px; width:100%;">
+        <div style="margin-left:20px; width:calc(100% - 320px);">
+            <div class="container-fluid p-4">
+                <!-- Header Section -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="fw-bold">Account Information</h4>
+                    <button class="btn btn-outline-secondary btn-sm">Go Back</button>
+                </div>
 
+                <!-- Profile Info Section -->
+                <div class="d-flex align-items-center mb-4 p-3 bg-light rounded-3">
+                    <img src="IMG1207.jpg" alt="Profile" class="rounded-circle me-3" style="width:60px; height:60px; object-fit:cover;">
+                    <div>
+                        <h6 class="mb-1">Sundar Gurung</h6>
+                        <p class="text-muted mb-0 small">sundargurung360@gmail.com</p>
+                    </div>
+                </div>
+
+                <!-- Tabs Navigation -->
+                <ul class="nav nav-tabs mb-4" id="settingsTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active small" id="personal-tab" data-bs-toggle="tab" data-bs-target="#personal" type="button" role="tab" aria-controls="personal" aria-selected="true">
+                            <i class="bi bi-person me-2"></i>Personal Information
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link small" id="password-tab" data-bs-toggle="tab" data-bs-target="#password" type="button" role="tab" aria-controls="password" aria-selected="false">
+                            <i class="bi bi-lock me-2"></i>Password & Security
+                        </button>
+                    </li>
+                </ul>
+
+                <!-- Tab Content -->
+                <div class="tab-content" id="settingsTabsContent">
+                    <!-- Personal Information Tab -->
+                    <div class="tab-pane fade show active" id="personal" role="tabpanel" aria-labelledby="personal-tab">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body p-4">
+                                <form>
+                                    <div class="mb-3">
+                                        <label for="username" class="form-label fw-semibold small">Username</label>
+                                        <input type="text" class="form-control" id="username" value="SundarGurung">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="email" class="form-label fw-semibold small">Email Address</label>
+                                        <input type="email" class="form-control" id="email" value="sundargurung360@gmail.com">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="phone" class="form-label fw-semibold small">Contact Number</label>
+                                        <input type="tel" class="form-control" id="phone" placeholder="Enter phone number">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="position" class="form-label fw-semibold small">Position</label>
+                                        <input type="text" class="form-control" id="position" placeholder="Enter position">
+                                    </div>
+                                  
+                                    <div class="d-flex gap-3">
+                                        <button type="submit" class="btn btn-primary btn-sm px-4" style="background-color: #ff6b6b; border-color: #ff6b6b;">
+                                            <i class="bi bi-check2 me-2"></i>Save Changes
+                                        </button>
+                                        <button type="button" class="btn btn-outline-secondary btn-sm px-4">
+                                            <i class="bi bi-x-circle me-2"></i>Cancel
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Password & Security Tab -->
+                    <div class="tab-pane fade" id="password" role="tabpanel" aria-labelledby="password-tab">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body p-4">
+                                <form>
+                                    <div class="mb-4">
+                                        <h6 class="fw-semibold mb-3">Change Password</h6>
+                                        <div class="mb-3">
+                                            <label for="currentPassword" class="form-label fw-semibold small">Current Password</label>
+                                            <input type="password" class="form-control" id="currentPassword" placeholder="Enter current password">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="newPassword" class="form-label fw-semibold small">New Password</label>
+                                            <input type="password" class="form-control" id="newPassword" placeholder="Enter new password">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="confirmPassword" class="form-label fw-semibold small">Confirm New Password</label>
+                                            <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm new password">
+                                        </div>
+                                    </div>
+
+
+                                
+
+                                    <div class="d-flex gap-3">
+                                        <button type="submit" class="btn btn-primary btn-sm px-4" style="background-color: #ff6b6b; border-color: #ff6b6b;">
+                                            <i class="bi bi-shield-check me-2"></i>Update Security
+                                        </button>
+                                        <button type="button" class="btn btn-outline-secondary btn-sm px-4">
+                                            <i class="bi bi-x-circle me-2"></i>Cancel
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
