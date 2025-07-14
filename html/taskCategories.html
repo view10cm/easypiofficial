@@ -1,321 +1,441 @@
-<!--Dashboard Page-->
-
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=], initial-scale=1.0">
-    <title>EasyPi - Dashboard</title>
-    <script></script>
-    <link rel="stylesheet" href="style.css">
-    <script src="script.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-</head>
-<body>
-    <!-- Navbar -->
-    <nav class="navbar bg-light px-4 py-3 shadow-sm" style="border-bottom:1px solid #ddd;">
-        <div class="container-fluid">
-            <div class="row w-100 align-items-center">
-                <!-- Logo/Title -->
-                <div class="col-auto">
-                    <span class="fs-3 fw-bold">
-                        <span style="color:#ff6b6b;">Dash</span><span style="color:#222;">board</span>
-                    </span>
-                </div>
-                <!-- Search Bar Centered -->
-                <div class="col d-flex justify-content-center">
-                    <form style="max-width:600px; width:100%;">
-                        <div class="input-group">
-                            <input type="text" class="form-control bg-light" placeholder="Search your task here..." aria-label="Search">
-                            <button class="btn" type="submit" style="background:#ff6b6b;">
-                                <i class="bi bi-search" style="color:white;"></i>
-                            </button>
-                        </div>
-                    </form>
-                </div>
-                <!-- Icon Buttons Right -->
-                <div class="col-auto d-flex justify-content-end gap-2">
-                    <button class="btn rounded-3" style="background:#ff6b6b;">
-                        <i class="bi bi-calendar" style="color:white;"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </nav>
-    <!-- Sidebar below Navbar -->
-    <div class="d-flex">
-        <aside style="width:300px; min-height:912px; background:#b9770e; border-top-right-radius:16px; margin-top:0;" class="d-flex flex-column align-items-center py-4">
-            <!-- Profile Section -->
-            <div class="mb-3 text-center">
-                <img src="IMG1207.jpg" alt="Profile" class="rounded-circle" style="width:80px; height:80px; object-fit:cover; border:4px solid #fff;">
-                <div class="mt-2 fw-bold text-white" style="font-size:1.2rem;">Sundar Gurung</div>
-                <div class="text-white-50" style="font-size:0.95rem;">sundargurung360@gmail.com</div>
-            </div>
-            <!-- Menu -->
-            <nav class="w-100 mt-4 flex-grow-1">
-                <ul class="nav flex-column gap-2 px-3">
-                    <li>
-                        <a href="dashboard.html" class="nav-link text-white d-flex align-items-center px-3 py-2">
-                            <i class="bi bi-grid-fill me-2"></i> Dashboard
-                        </a>
-                    </li>
-                    <li>
-                        <a href="vitalTask.html" class="nav-link text-white d-flex align-items-center px-3 py-2">
-                            <i class="bi bi-exclamation-circle me-2"></i> Vital Task
-                        </a>
-                    </li>
-                    <li>
-                        <a href="myTask.html" class="nav-link text-white d-flex align-items-center px-3 py-2">
-                            <i class="bi bi-check2-square me-2"></i> My Task
-                        </a>
-                    </li>
-                    <li>
-                        <a href="taskCategories.html" class="nav-link bg-white rounded-3 d-flex align-items-center px-3 py-2 fw-semibold" style="color:#b9770e;">
-                            <i class="bi bi-list-ul me-2"></i> Task Categories
-                        </a>
-                    </li>
-                    <li>
-                        <a href="settings.html" class="nav-link text-white d-flex align-items-center px-3 py-2">
-                            <i class="bi bi-gear me-2"></i> Settings
-                        </a>
-                    </li>
-                    <li>
-                        <a href="help.html" class="nav-link text-white d-flex align-items-center px-3 py-2">
-                            <i class="bi bi-question-circle me-2"></i> Help
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-            <!-- Logout -->
-            <div class="w-100 px-3 mb-2">
-                <a href="#" class="nav-link text-white d-flex align-items-center px-3 py-2">
-                    <i class="bi bi-box-arrow-right me-2"></i> Logout
-                </a>
-            </div>
-        </aside>
-        <!-- Main Content (add margin-left to avoid overlap) -->
-        <div style="margin-left:10px; width:100%;">
-            <div class="container py-4" style="max-width:1400px;">
-                <div class="bg-white rounded-4 shadow-sm p-4" style="border:1px solid #e3e3e3;">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h3 class="fw-bold" style="color:#222;">
-                            <span style="border-bottom:3px solid #ff6b6b;">Task Categories</span>
-                        </h3>
-                        <a href="dashboard.html" class="fw-semibold" style="color:#222; text-decoration:underline;">Go Back</a>
-                    </div>
-                    
-                    <!-- Task Status Table -->
-                    <div class="mb-4">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="fw-semibold" style="color:#222; border-bottom:2px solid #ff6b6b;">Task Status</span>
-                            <a href="#" class="fw-semibold" style="color:#ff6b6b; text-decoration:none; font-size:1rem;" data-bs-toggle="modal" data-bs-target="#addTaskStatusModal">+ Add Task Status</a>
-                        </div>
-                        <div class="table-responsive">
-                            <table id="taskStatusTable" class="table table-bordered align-middle" style="border-radius:12px; overflow:hidden;">
-                                <thead>
-                                    <tr style="background:#f7f7f7;">
-                                        <th style="width:60px;">SN</th>
-                                        <th>Task Status</th>
-                                        <th style="width:200px;">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr id="noTaskStatusRow">
-                                        <td colspan="3" class="text-center text-muted">No Task Status, please create your Task Status</td>
-                                    </tr>
-                                    <!-- Existing status rows go here -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
 
-                    <!-- Task Priority Table -->
-                    <div class="mb-4">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="fw-semibold" style="color:#222; border-bottom:2px solid #ff6b6b;">Task Priority</span>
-                            <a href="#" class="fw-semibold" style="color:#ff6b6b; text-decoration:none; font-size:1rem;" data-bs-toggle="modal" data-bs-target="#addTaskPriorityModal">+ Add Task Priority</a>
-                        </div>
-                        <div class="table-responsive">
-                            <table id="taskPriorityTable" class="table table-bordered align-middle" style="border-radius:12px; overflow:hidden;">
-                                <thead>
-                                    <tr style="background:#f7f7f7;">
-                                        <th style="width:60px;">SN</th>
-                                        <th>Task Priority</th>
-                                        <th style="width:200px;">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr id="noTaskPriorityRow">
-                                        <td colspan="3" class="text-center text-muted">No Task Priority, please create your Task Priority</td>
-                                    </tr>
-                                    <!-- Existing priority rows go here -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EasyPi - Help Center</title>
+  <script></script>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
+    crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+  <style>
+    html,
+    body {
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      height: 70px;
+    }
+
+    .content-wrapper {
+      display: flex;
+      height: 100vh;
+      padding-top: 70px;
+    }
+
+    .sidebar {
+      width: 300px;
+      height: calc(100vh - 90px);
+      background: #1286cc;
+      border-top-right-radius: 16px;
+      border-bottom-right-radius: 16px;
+      position: fixed;
+      left: 0;
+      top: 70px;
+      overflow-y: auto;
+      z-index: 999;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+
+    .sidebar .nav-link {
+      color: white;
+      transition: all 0.2s ease-in-out;
+    }
+
+    .sidebar .nav-link:hover {
+      background-color: #ebb915;
+      color: black;
+      border-radius: 8px;
+    }
+
+    .sidebar .nav-link.bg-white {
+      background-color: #ebb915 !important;
+      color: black !important;
+      font-weight: bold;
+    }
+
+    .main-content {
+      margin-left: 300px;
+      width: calc(100% - 300px);
+      height: calc(100vh - 70px);
+      overflow-y: auto;
+      padding: 30px;
+      background: #f8f9fa;
+    }
+
+    /* Scrollbar */
+    .main-content::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .main-content::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+
+    .main-content::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      border-radius: 10px;
+    }
+
+    .main-content::-webkit-scrollbar-thumb:hover {
+      background: #a8a8a8;
+    }
+
+    /* Buttons */
+    .btn {
+      background-color: #1286cc;
+      color: white;
+      border: none;
+    }
+
+    .btn:hover {
+      background-color: #ebb915;
+      color: black;
+      border-radius: 160px;
+    }
+
+    .input-group .btn {
+      background-color: #1286cc;
+    }
+
+    .input-group .btn:hover {
+      background-color: #ebb915;
+      color: black;
+      border-radius: 160px;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Navbar -->
+  <nav class="navbar bg-light px-4 py-3 shadow-sm" style="border-bottom:1px solid #ddd;">
+    <div class="container-fluid">
+      <div class="row w-100 align-items-center">
+        <div class="col-auto">
+          <span class="fs-3 fw-bold">
+            <span style="color:#1286cc;">Easy</span><span style="color:#222;">Pi</span>
+          </span>
         </div>
+        <div class="col d-flex justify-content-center">
+          <form style="max-width:600px; width:100%;">
+            <div class="input-group">
+              <input type="text" class="form-control bg-light" placeholder="Search your task here..."
+                aria-label="Search">
+              <button class="btn" type="submit"><i class="bi bi-search"></i></button>
+            </div>
+          </form>
+        </div>
+        <div class="col-auto d-flex justify-content-end gap-2">
+          <button class="btn rounded-3"><i class="bi bi-calendar"></i></button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Content -->
+  <div class="content-wrapper">
+    <aside class="sidebar d-flex flex-column align-items-center py-4">
+      <div class="mb-3 text-center">
+        <img src="IMG1207.jpg" alt="Profile" class="rounded-circle"
+          style="width:80px; height:80px; object-fit:cover; border:4px solid #fff;">
+        <div class="mt-2 fw-bold text-white" style="font-size:1.2rem;">Sundar Gurung</div>
+        <div class="text-white-50" style="font-size:0.95rem;">sundargurung360@gmail.com</div>
+      </div>
+      <nav class="w-100 mt-4 flex-grow-1">
+        <ul class="nav flex-column gap-2 px-3">
+          <li>
+            <a href="dashboard.html" class="nav-link text-white d-flex align-items-center px-3 py-2">
+              <i class="bi bi-grid-fill me-2"></i> Dashboard
+            </a>
+          </li>
+          <li>
+            <a href="vitalTask.html" class="nav-link text-white d-flex align-items-center px-3 py-2">
+              <i class="bi bi-exclamation-circle me-2"></i> Vital Task
+            </a>
+          </li>
+          <li>
+            <a href="myTask.html" class="nav-link text-white d-flex align-items-center px-3 py-2">
+              <i class="bi bi-check2-square me-2"></i> My Task
+            </a>
+          </li>
+          <li>
+            <a href="taskCategories.html" class="nav-link bg-white rounded-3 d-flex align-items-center px-3 py-2 fw-semibold"
+              style="color:#b9770e;">
+              <i class="bi bi-exclamation-circle me-2"></i> Task Categories
+            </a>
+          </li>
+          <li>
+            <a href="settings.html" class="nav-link text-white d-flex align-items-center px-3 py-2">
+              <i class="bi bi-gear me-2"></i> Settings
+            </a>
+          </li>
+          <li>
+            <a href="help.html" class="nav-link text-white d-flex align-items-center px-3 py-2">
+              <i class="bi bi-question-circle me-2"></i> Help
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <div class="w-100 px-3 mb-2">
+        <a href="sign_in.html" class="nav-link d-flex align-items-center px-3 py-2"><i
+            class="bi bi-box-arrow-right me-2"></i> Logout</a>
+      </div>
+    </aside>
+
+    <!-- Scrollable Main Content -->
+    <div class="main-content">
+      <!-- Main Content (add margin-left to avoid overlap) -->
+      <div style="margin-left:10px; width:100%;">
+        <div class="container py-4" style="max-width:1400px;">
+          <div class="bg-white rounded-4 shadow-sm p-4" style="border:1px solid #e3e3e3;">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h3 class="fw-bold" style="color:#222;">
+                <span style="border-bottom:3px solid #ff6b6b;">Task Categories</span>
+              </h3>
+              <a href="dashboard.html" class="fw-semibold" style="color:#222; text-decoration:underline;">Go Back</a>
+            </div>
+
+            <!-- Task Status Table -->
+            <div class="mb-4">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="fw-semibold" style="color:#222; border-bottom:2px solid #ff6b6b;">Task Status</span>
+                <a href="#" class="fw-semibold" style="color:#ff6b6b; text-decoration:none; font-size:1rem;"
+                  data-bs-toggle="modal" data-bs-target="#addTaskStatusModal">+ Add Task Status</a>
+              </div>
+              <div class="table-responsive">
+                <table id="taskStatusTable" class="table table-bordered align-middle"
+                  style="border-radius:12px; overflow:hidden;">
+                  <thead>
+                    <tr style="background:#f7f7f7;">
+                      <th style="width:60px;">SN</th>
+                      <th>Task Status</th>
+                      <th style="width:200px;">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr id="noTaskStatusRow">
+                      <td colspan="3" class="text-center text-muted">No Task Status, please create your Task Status</td>
+                    </tr>
+                    <!-- Existing status rows go here -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Task Priority Table -->
+            <div class="mb-4">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="fw-semibold" style="color:#222; border-bottom:2px solid #ff6b6b;">Task Priority</span>
+                <a href="#" class="fw-semibold" style="color:#ff6b6b; text-decoration:none; font-size:1rem;"
+                  data-bs-toggle="modal" data-bs-target="#addTaskPriorityModal">+ Add Task Priority</a>
+              </div>
+              <div class="table-responsive">
+                <table id="taskPriorityTable" class="table table-bordered align-middle"
+                  style="border-radius:12px; overflow:hidden;">
+                  <thead>
+                    <tr style="background:#f7f7f7;">
+                      <th style="width:60px;">SN</th>
+                      <th>Task Priority</th>
+                      <th style="width:200px;">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr id="noTaskPriorityRow">
+                      <td colspan="3" class="text-center text-muted">No Task Priority, please create your Task Priority
+                      </td>
+                    </tr>
+                    <!-- Existing priority rows go here -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Add Task Status Modal -->
-<div class="modal fade" id="addTaskStatusModal" tabindex="-1" aria-labelledby="addTaskStatusModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="addTaskStatusModalLabel">Add Task Status</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form>
-          <div class="mb-3">
-            <label for="taskStatusName" class="form-label">Task Status Name</label>
-            <input type="text" class="form-control" id="taskStatusName" placeholder="Enter status name">
+    <div class="modal fade" id="addTaskStatusModal" tabindex="-1" aria-labelledby="addTaskStatusModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addTaskStatusModalLabel">Add Task Status</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" class="btn" style="background:#ff6b6b; color:white;" onclick="addTaskStatus()">Add Status</button>
+          <div class="modal-body">
+            <form>
+              <div class="mb-3">
+                <label for="taskStatusName" class="form-label">Task Status Name</label>
+                <input type="text" class="form-control" id="taskStatusName" placeholder="Enter status name">
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn" style="background:#ff6b6b; color:white;" onclick="addTaskStatus()">Add
+              Status</button>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
-<!-- End Add Task Status Modal -->
+    <!-- End Add Task Status Modal -->
 
-<!-- Edit Task Status Modal -->
-<div class="modal fade" id="editTaskStatusModal" tabindex="-1" aria-labelledby="editTaskStatusModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="editTaskStatusModalLabel">Edit Task Status</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form>
-          <div class="mb-3">
-            <label for="editTaskStatusName" class="form-label">Task Status Name</label>
-            <input type="text" class="form-control" id="editTaskStatusName">
+    <!-- Edit Task Status Modal -->
+    <div class="modal fade" id="editTaskStatusModal" tabindex="-1" aria-labelledby="editTaskStatusModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editTaskStatusModalLabel">Edit Task Status</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" class="btn" style="background:#ff6b6b; color:white;" id="saveTaskStatusEdit">Save</button>
+          <div class="modal-body">
+            <form>
+              <div class="mb-3">
+                <label for="editTaskStatusName" class="form-label">Task Status Name</label>
+                <input type="text" class="form-control" id="editTaskStatusName">
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn" style="background:#ff6b6b; color:white;"
+              id="saveTaskStatusEdit">Save</button>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
-<!-- End Edit Task Status Modal -->
+    <!-- End Edit Task Status Modal -->
 
-<!-- Add Task Priority Modal -->
-<div class="modal fade" id="addTaskPriorityModal" tabindex="-1" aria-labelledby="addTaskPriorityModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="addTaskPriorityModalLabel">Add Task Priority</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form>
-          <div class="mb-3">
-            <label for="taskPriorityName" class="form-label">Task Priority Name</label>
-            <input type="text" class="form-control" id="taskPriorityName" placeholder="Enter priority name">
+    <!-- Add Task Priority Modal -->
+    <div class="modal fade" id="addTaskPriorityModal" tabindex="-1" aria-labelledby="addTaskPriorityModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addTaskPriorityModalLabel">Add Task Priority</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" class="btn" style="background:#ff6b6b; color:white;" onclick="addTaskPriority()">Add Priority</button>
+          <div class="modal-body">
+            <form>
+              <div class="mb-3">
+                <label for="taskPriorityName" class="form-label">Task Priority Name</label>
+                <input type="text" class="form-control" id="taskPriorityName" placeholder="Enter priority name">
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn" style="background:#ff6b6b; color:white;" onclick="addTaskPriority()">Add
+              Priority</button>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
-<!-- End Add Task Priority Modal -->
+    <!-- End Add Task Priority Modal -->
 
-<!-- Edit Task Priority Modal -->
-<div class="modal fade" id="editTaskPriorityModal" tabindex="-1" aria-labelledby="editTaskPriorityModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="editTaskPriorityModalLabel">Edit Task Priority</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form>
-          <div class="mb-3">
-            <label for="editTaskPriorityName" class="form-label">Task Priority Name</label>
-            <input type="text" class="form-control" id="editTaskPriorityName">
+    <!-- Edit Task Priority Modal -->
+    <div class="modal fade" id="editTaskPriorityModal" tabindex="-1" aria-labelledby="editTaskPriorityModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editTaskPriorityModalLabel">Edit Task Priority</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" class="btn" style="background:#ff6b6b; color:white;" id="saveTaskPriorityEdit">Save</button>
+          <div class="modal-body">
+            <form>
+              <div class="mb-3">
+                <label for="editTaskPriorityName" class="form-label">Task Priority Name</label>
+                <input type="text" class="form-control" id="editTaskPriorityName">
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn" style="background:#ff6b6b; color:white;"
+              id="saveTaskPriorityEdit">Save</button>
+          </div>
+        </div>
       </div>
     </div>
+    <!-- End Edit Task Priority Modal -->
   </div>
-</div>
-<!-- End Edit Task Priority Modal -->
 
-<script>
-let currentEditRow = null;
-let currentEditType = null;
-let currentEditPriorityRow = null;
+  <script>
+    let currentEditRow = null;
+    let currentEditType = null;
+    let currentEditPriorityRow = null;
 
-function showEditModal(btn, tableId) {
-  currentEditRow = btn.closest('tr');
-  currentEditType = tableId;
-  const nameCell = currentEditRow.cells[1];
-  const currentValue = nameCell.textContent;
+    function showEditModal(btn, tableId) {
+      currentEditRow = btn.closest('tr');
+      currentEditType = tableId;
+      const nameCell = currentEditRow.cells[1];
+      const currentValue = nameCell.textContent;
 
-  if (tableId === 'taskStatusTable') {
-    document.getElementById('editTaskStatusName').value = currentValue;
-    const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editTaskStatusModal'));
-    modal.show();
-  }
-}
+      if (tableId === 'taskStatusTable') {
+        document.getElementById('editTaskStatusName').value = currentValue;
+        const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editTaskStatusModal'));
+        modal.show();
+      }
+    }
 
-function showEditPriorityModal(btn) {
-  currentEditPriorityRow = btn.closest('tr');
-  const nameCell = currentEditPriorityRow.cells[1];
-  document.getElementById('editTaskPriorityName').value = nameCell.textContent;
-  const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editTaskPriorityModal'));
-  modal.show();
-}
+    function showEditPriorityModal(btn) {
+      currentEditPriorityRow = btn.closest('tr');
+      const nameCell = currentEditPriorityRow.cells[1];
+      document.getElementById('editTaskPriorityName').value = nameCell.textContent;
+      const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editTaskPriorityModal'));
+      modal.show();
+    }
 
-document.getElementById('saveTaskStatusEdit').onclick = function() {
-  if (currentEditRow && currentEditType === 'taskStatusTable') {
-    const newValue = document.getElementById('editTaskStatusName').value.trim();
-    if (newValue) currentEditRow.cells[1].textContent = newValue;
-    bootstrap.Modal.getOrCreateInstance(document.getElementById('editTaskStatusModal')).hide();
-  }
-};
+    document.getElementById('saveTaskStatusEdit').onclick = function () {
+      if (currentEditRow && currentEditType === 'taskStatusTable') {
+        const newValue = document.getElementById('editTaskStatusName').value.trim();
+        if (newValue) currentEditRow.cells[1].textContent = newValue;
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('editTaskStatusModal')).hide();
+      }
+    };
 
-document.getElementById('saveTaskPriorityEdit').onclick = function() {
-  if (currentEditPriorityRow) {
-    const newValue = document.getElementById('editTaskPriorityName').value.trim();
-    if (newValue) currentEditPriorityRow.cells[1].textContent = newValue;
-    bootstrap.Modal.getOrCreateInstance(document.getElementById('editTaskPriorityModal')).hide();
-  }
-};
+    document.getElementById('saveTaskPriorityEdit').onclick = function () {
+      if (currentEditPriorityRow) {
+        const newValue = document.getElementById('editTaskPriorityName').value.trim();
+        if (newValue) currentEditPriorityRow.cells[1].textContent = newValue;
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('editTaskPriorityModal')).hide();
+      }
+    };
 
-function addTaskStatus() {
-  const input = document.getElementById('taskStatusName');
-  const value = input.value.trim();
-  if (!value) return;
+    function addTaskStatus() {
+      const input = document.getElementById('taskStatusName');
+      const value = input.value.trim();
+      if (!value) return;
 
-  const table = document.getElementById('taskStatusTable').getElementsByTagName('tbody')[0];
+      const table = document.getElementById('taskStatusTable').getElementsByTagName('tbody')[0];
 
-  // Remove "No Task Status" row if present
-  const noStatusRow = document.getElementById('noTaskStatusRow');
-  if (noStatusRow) noStatusRow.remove();
+      // Remove "No Task Status" row if present
+      const noStatusRow = document.getElementById('noTaskStatusRow');
+      if (noStatusRow) noStatusRow.remove();
 
-  const rowCount = table.rows.length + 1;
-  const newRow = table.insertRow();
-  newRow.innerHTML = `
+      const rowCount = table.rows.length + 1;
+      const newRow = table.insertRow();
+      newRow.innerHTML = `
     <td>${rowCount}</td>
     <td>${value}</td>
     <td>
@@ -328,47 +448,47 @@ function addTaskStatus() {
     </td>
   `;
 
-  input.value = '';
-  const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('addTaskStatusModal'));
-  modal.hide();
-}
-
-// Delete row function for Task Status table only
-function deleteRow(btn) {
-  const row = btn.closest('tr');
-  const tableBody = row.parentNode;
-  row.remove();
-  updateSerialNumbers('taskStatusTable');
-
-  // Check Task Status table for remaining data rows
-  if (tableBody === document.getElementById('taskStatusTable').getElementsByTagName('tbody')[0]) {
-    let actualRows = 0;
-    for (let r of tableBody.rows) {
-      if (r.id !== 'noTaskStatusRow') actualRows++;
+      input.value = '';
+      const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('addTaskStatusModal'));
+      modal.hide();
     }
-    if (actualRows === 0) {
-      const noStatusRow = document.createElement('tr');
-      noStatusRow.id = 'noTaskStatusRow';
-      noStatusRow.innerHTML = `<td colspan="3" class="text-center text-muted">No Task Status, please create your Task Status</td>`;
-      tableBody.appendChild(noStatusRow);
+
+    // Delete row function for Task Status table only
+    function deleteRow(btn) {
+      const row = btn.closest('tr');
+      const tableBody = row.parentNode;
+      row.remove();
+      updateSerialNumbers('taskStatusTable');
+
+      // Check Task Status table for remaining data rows
+      if (tableBody === document.getElementById('taskStatusTable').getElementsByTagName('tbody')[0]) {
+        let actualRows = 0;
+        for (let r of tableBody.rows) {
+          if (r.id !== 'noTaskStatusRow') actualRows++;
+        }
+        if (actualRows === 0) {
+          const noStatusRow = document.createElement('tr');
+          noStatusRow.id = 'noTaskStatusRow';
+          noStatusRow.innerHTML = `<td colspan="3" class="text-center text-muted">No Task Status, please create your Task Status</td>`;
+          tableBody.appendChild(noStatusRow);
+        }
+      }
     }
-  }
-}
 
-function addTaskPriority() {
-  const input = document.getElementById('taskPriorityName');
-  const value = input.value.trim();
-  if (!value) return;
+    function addTaskPriority() {
+      const input = document.getElementById('taskPriorityName');
+      const value = input.value.trim();
+      if (!value) return;
 
-  const table = document.getElementById('taskPriorityTable').getElementsByTagName('tbody')[0];
+      const table = document.getElementById('taskPriorityTable').getElementsByTagName('tbody')[0];
 
-  // Remove "No Task Priority" row if present
-  const noPriorityRow = document.getElementById('noTaskPriorityRow');
-  if (noPriorityRow) noPriorityRow.remove();
+      // Remove "No Task Priority" row if present
+      const noPriorityRow = document.getElementById('noTaskPriorityRow');
+      if (noPriorityRow) noPriorityRow.remove();
 
-  const rowCount = table.rows.length + 1;
-  const newRow = table.insertRow();
-  newRow.innerHTML = `
+      const rowCount = table.rows.length + 1;
+      const newRow = table.insertRow();
+      newRow.innerHTML = `
     <td>${rowCount}</td>
     <td>${value}</td>
     <td>
@@ -381,50 +501,51 @@ function addTaskPriority() {
     </td>
   `;
 
-  input.value = '';
-  const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('addTaskPriorityModal'));
-  modal.hide();
-  updateSerialNumbers('taskPriorityTable');
-}
-
-function deletePriorityRow(btn) {
-  const row = btn.closest('tr');
-  const tableBody = row.parentNode;
-  row.remove();
-  updateSerialNumbers('taskPriorityTable');
-
-  // Check Task Priority table for remaining data rows
-  if (tableBody === document.getElementById('taskPriorityTable').getElementsByTagName('tbody')[0]) {
-    let actualRows = 0;
-    for (let r of tableBody.rows) {
-      if (r.id !== 'noTaskPriorityRow') actualRows++;
+      input.value = '';
+      const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('addTaskPriorityModal'));
+      modal.hide();
+      updateSerialNumbers('taskPriorityTable');
     }
-    if (actualRows === 0) {
-      const noPriorityRow = document.createElement('tr');
-      noPriorityRow.id = 'noTaskPriorityRow';
-      noPriorityRow.innerHTML = `<td colspan="3" class="text-center text-muted">No Task Priority, please create your Task Priority</td>`;
-      tableBody.appendChild(noPriorityRow);
-    }
-  }
-}
 
-// Update SN numbers after deletion or addition for both tables
-function updateSerialNumbers(tableId) {
-  const table = document.getElementById(tableId);
-  if (!table) return;
-  const rows = table.getElementsByTagName('tbody')[0].rows;
-  let sn = 1;
-  for (let i = 0; i < rows.length; i++) {
-    // Skip message row
-    if ((tableId === 'taskStatusTable' && rows[i].id === 'noTaskStatusRow') ||
-        (tableId === 'taskPriorityTable' && rows[i].id === 'noTaskPriorityRow')) {
-      rows[i].cells[0].textContent = ""; // Remove SN for message row
-      continue;
+    function deletePriorityRow(btn) {
+      const row = btn.closest('tr');
+      const tableBody = row.parentNode;
+      row.remove();
+      updateSerialNumbers('taskPriorityTable');
+
+      // Check Task Priority table for remaining data rows
+      if (tableBody === document.getElementById('taskPriorityTable').getElementsByTagName('tbody')[0]) {
+        let actualRows = 0;
+        for (let r of tableBody.rows) {
+          if (r.id !== 'noTaskPriorityRow') actualRows++;
+        }
+        if (actualRows === 0) {
+          const noPriorityRow = document.createElement('tr');
+          noPriorityRow.id = 'noTaskPriorityRow';
+          noPriorityRow.innerHTML = `<td colspan="3" class="text-center text-muted">No Task Priority, please create your Task Priority</td>`;
+          tableBody.appendChild(noPriorityRow);
+        }
+      }
     }
-    rows[i].cells[0].textContent = sn++;
-  }
-}
-</script>
+
+    // Update SN numbers after deletion or addition for both tables
+    function updateSerialNumbers(tableId) {
+      const table = document.getElementById(tableId);
+      if (!table) return;
+      const rows = table.getElementsByTagName('tbody')[0].rows;
+      let sn = 1;
+      for (let i = 0; i < rows.length; i++) {
+        // Skip message row
+        if ((tableId === 'taskStatusTable' && rows[i].id === 'noTaskStatusRow') ||
+          (tableId === 'taskPriorityTable' && rows[i].id === 'noTaskPriorityRow')) {
+          rows[i].cells[0].textContent = ""; // Remove SN for message row
+          continue;
+        }
+        rows[i].cells[0].textContent = sn++;
+      }
+    }
+  </script>
 
 </body>
+
 </html>
