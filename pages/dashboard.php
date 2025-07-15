@@ -4,7 +4,7 @@ require '../includes/db_connection.php';
 
 // If user is not logged in, redirect to sign-in
 if (empty($_SESSION['account_id'])) {
-    header('Location: ../pages/sign_in.html');
+    header('Location: ../pages/sign_in.php');
     exit;
 }
 
@@ -18,7 +18,7 @@ try {
     if (!$user) {
         session_unset();
         session_destroy();
-        header('Location: ../pages/sign_in.html');
+        header('Location: ../pages/sign_in.php');
         exit;
     }
 
@@ -31,9 +31,64 @@ try {
 } catch (PDOException $e) {
     // On DB error, redirect to sign-in
     error_log('DB error: ' . $e->getMessage());
-    header('Location: ../pages/sign_in.html');
+    header('Location: ../pages/sign_in.php');
     exit;
 }
+  // Fetch today's tasks
+    $stmt = $pdo->prepare("
+        SELECT t.task_id, t.task_title, t.task_description, t.task_due_date, t.task_img,
+               p.priority_name, s.status_name
+        FROM tasks t
+        LEFT JOIN task_priority_levels p ON t.priority_id = p.priority_id
+        LEFT JOIN task_status s ON t.status_id = s.status_id
+        WHERE t.account_id = :account_id
+          AND DATE(t.task_due_date) = CURDATE()
+        ORDER BY t.task_due_date ASC
+    ");
+    $stmt->execute(['account_id' => $_SESSION['account_id']]);
+    $tasks = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $statusColors = [
+        'Not Started' => '#ff6b6b',
+        'In Progress' => '#17a2b8',
+        'Completed'   => '#28a745'
+    ];
+
+// Fetch completed tasks excluding today
+$completedStmt = $pdo->prepare("
+    SELECT t.task_title, t.task_description, t.task_due_date, t.task_img,
+           p.priority_name, s.status_name
+    FROM tasks t
+    LEFT JOIN task_priority_levels p ON t.priority_id = p.priority_id
+    LEFT JOIN task_status s ON t.status_id = s.status_id
+    WHERE t.account_id = :account_id
+      AND s.status_name = 'Completed'
+      AND DATE(t.task_due_date) <> CURDATE()
+    ORDER BY t.task_due_date DESC
+");
+$completedStmt->execute(['account_id' => $_SESSION['account_id']]);
+$completedTasks = $completedStmt->fetchAll(PDO::FETCH_ASSOC);
+// Fetch counts by status
+$statusStmt = $pdo->prepare("
+    SELECT s.status_name, COUNT(*) AS total
+    FROM tasks t
+    LEFT JOIN task_status s ON t.status_id = s.status_id
+    WHERE t.account_id = :account_id
+    GROUP BY s.status_name
+");
+$statusStmt->execute(['account_id' => $_SESSION['account_id']]);
+$statusCounts = $statusStmt->fetchAll(PDO::FETCH_KEY_PAIR);
+
+$totalTasks = array_sum($statusCounts);
+
+$completedPct = $totalTasks ? round(($statusCounts['Completed'] ?? 0) / $totalTasks * 100) : 0;
+$inProgressPct = $totalTasks ? round(($statusCounts['In Progress'] ?? 0) / $totalTasks * 100) : 0;
+$notStartedPct = $totalTasks ? round(($statusCounts['Not Started'] ?? 0) / $totalTasks * 100) : 0;
+
+function getDashOffset($percent) {
+    return 188 - (188 * ($percent / 100));
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -43,12 +98,10 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EasyPi - User Dashboard</title>
     <link rel="icon" type="image/png" href="../assets/titlelogo.png">
-
     <link rel="stylesheet" href="../css/general_components.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+        crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
         crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 </head>
@@ -61,7 +114,6 @@ try {
     <div class="content-wrapper">
         <div id="sidebar-container"></div>
 
-        <!-- Scrollable Main Content -->
         <div class="main-content">
             <div class="container-fluid">
                 <div style="margin-left:10px; width:100%;">
@@ -69,152 +121,144 @@ try {
                         <div class="row g-4">
                             <!-- Left Column: To-Do -->
                             <div class="col-lg-7">
-                          
                                 <div class="card mb-4 shadow-sm">
-                                          <h5 class="card-title fw-bold ms-4 mt-4 mb-4"
-                                    style="color:#333; text-decoration: underline; text-decoration-color: #1286cc;; text-decoration-thickness: 2px;">
-                                    Dashboard</h5>
-                                   
+                                    <h5 class="card-title fw-bold ms-4 mt-4 mb-4"
+                                        style="color:#333; text-decoration: underline; text-decoration-color: #1286cc; text-decoration-thickness: 2px;">
+                                        Dashboard
+                                    </h5>
+
                                     <div class="card-body">
                                         <div class="d-flex justify-content-between align-items-center mb-3">
                                             <div>
                                                 <i class="bi bi-clipboard-check"></i>
                                                 <span class="fw-bold text-primary">To-Do</span>
-                                                <span class="text-muted ms-2">20 June - Today</span>
+                                                <span class="text-muted ms-2"><?= date("d F - l") ?></span>
                                             </div>
-                                          
                                         </div>
+
                                         <!-- Task Cards -->
                                         <div class="mb-3">
-                                            <div class="card border-0 shadow-sm mb-3">
-                                                <div class="card-body d-flex">
-                                                    <div>
-                                                        <span class="badge bg-danger mb-2">Not Started</span>
-                                                        <h5 class="card-title mb-1">Attend Nischal's Birthday Party</h5>
-                                                        <p class="card-text mb-2">Buy gifts on the way and pick up cake
-                                                            from the bakery. (6 PM | Fresh Elements)</p>
-                                                        <div class="small text-muted">Priority: <span
-                                                                class="text-warning">Moderate</span> | Status: <span
-                                                                class="text-danger">Not Started</span> | Created on:
-                                                            20/06/2023</div>
+                                            <?php if (!empty($tasks)): ?>
+                                                <?php foreach ($tasks as $task): ?>
+                                                    <?php
+                                                        $imgPath = !empty($task['task_img']) 
+                                                            ? '../uploads/' . htmlspecialchars($task['task_img'], ENT_QUOTES, 'UTF-8') 
+                                                            : '../assets/img/placeholder.png';
+
+                                                        $statusColor = $statusColors[$task['status_name']] ?? '#6c757d';
+                                                    ?>
+                                                    <div class="card border-0 shadow-sm mb-3">
+                                                        <div class="card-body d-flex">
+                                                            <div>
+                                                                <span class="badge mb-2" style="background-color: <?= $statusColor ?>;">
+                                                                    <?= htmlspecialchars($task['status_name']) ?>
+                                                                </span>
+                                                                <h5 class="card-title mb-1"><?= htmlspecialchars($task['task_title']) ?></h5>
+                                                                <p class="card-text mb-2"><?= htmlspecialchars($task['task_description']) ?></p>
+                                                                <div class="small text-muted">
+                                                                    Priority: <span class="text-warning"><?= htmlspecialchars($task['priority_name']) ?></span> |
+                                                                    Status: <span style="color: <?= $statusColor ?>;"><?= htmlspecialchars($task['status_name']) ?></span> |
+                                                                    Due: <?= date('d/m/Y g:i A', strtotime($task['task_due_date'])) ?>
+                                                                </div>
+                                                            </div>
+                                                            <img src="<?= $imgPath ?>" alt="Task Image" class="rounded ms-auto"
+                                                                style="width:80px; height:60px; object-fit:cover;">
+                                                        </div>
                                                     </div>
-                                                    <img src="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=80&q=80"
-                                                        alt="Party" class="rounded ms-auto"
-                                                        style="width:80px; height:60px; object-fit:cover;">
-                                                </div>
-                                            </div>
-                                            <div class="card border-0 shadow-sm mb-3">
-                                                <div class="card-body d-flex">
-                                                    <div>
-                                                        <span class="badge bg-primary mb-2">In Progress</span>
-                                                        <h5 class="card-title mb-1">Landing Page Design for TravelDays
-                                                        </h5>
-                                                        <p class="card-text mb-2">Get the work done by EOD and discuss
-                                                            with client before leaving. (4 PM | Meeting Room)</p>
-                                                        <div class="small text-muted">Priority: <span
-                                                                class="text-warning">Moderate</span> | Status: <span
-                                                                class="text-primary">In Progress</span> | Created on:
-                                                            20/06/2023</div>
-                                                    </div>
-                                                    <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=80&q=80"
-                                                        alt="Design" class="rounded ms-auto"
-                                                        style="width:80px; height:60px; object-fit:cover;">
-                                                </div>
-                                            </div>
-                                            <div class="card border-0 shadow-sm mb-3">
-                                                <div class="card-body d-flex">
-                                                    <div>
-                                                        <span class="badge bg-primary mb-2">In Progress</span>
-                                                        <h5 class="card-title mb-1">Presentation on Final Product</h5>
-                                                        <p class="card-text mb-2">Make sure everything is functioning
-                                                            and all the necessities are properly met. Prepare the team
-                                                            and get the documents ready for...</p>
-                                                        <div class="small text-muted">Priority: <span
-                                                                class="text-warning">Moderate</span> | Status: <span
-                                                                class="text-primary">In Progress</span> | Created on:
-                                                            19/06/2023</div>
-                                                    </div>
-                                                    <img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=80&q=80"
-                                                        alt="Presentation" class="rounded ms-auto"
-                                                        style="width:80px; height:60px; object-fit:cover;">
-                                                </div>
-                                            </div>
+                                                <?php endforeach; ?>
+                                            <?php else: ?>
+                                                <p class="text-muted">No tasks for today.</p>
+                                            <?php endif; ?>
                                         </div>
+                                        <!-- End Task Cards -->
                                     </div>
                                 </div>
                             </div>
                             <!-- Right Column: Task Status & Completed Task -->
-                            <div class="col-lg-5">
-                                <div class="card mb-4 shadow-sm">
-                                    <div class="card-body">
-                                        <div class="fw-bold mb-3"><i class="bi bi-pie-chart"></i> Task Status</div>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div class="text-center">
-                                                <svg width="70" height="70">
-                                                    <circle cx="35" cy="35" r="30" stroke="#28a745" stroke-width="8"
-                                                        fill="none" stroke-dasharray="188" stroke-dashoffset="30" />
-                                                    <text x="35" y="40" text-anchor="middle" font-size="18"
-                                                        fill="#222">84%</text>
-                                                </svg>
-                                                <div class="small mt-2 text-success fw-semibold">Completed</div>
+                           <div class="col-lg-5">
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <div class="fw-bold mb-3"><i class="bi bi-pie-chart"></i> Task Status</div>
+            <div class="d-flex justify-content-between align-items-center">
+                <!-- Completed -->
+                <div class="text-center">
+                    <svg width="70" height="70">
+                        <circle cx="35" cy="35" r="30" stroke="#28a745" stroke-width="8"
+                                fill="none" stroke-dasharray="188"
+                                stroke-dashoffset="<?= getDashOffset($completedPct) ?>" />
+                        <text x="35" y="40" text-anchor="middle" font-size="18"
+                              fill="#222"><?= $completedPct ?>%</text>
+                    </svg>
+                    <div class="small mt-2 text-success fw-semibold">Completed</div>
                                             </div>
-                                            <div class="text-center">
-                                                <svg width="70" height="70">
-                                                    <circle cx="35" cy="35" r="30" stroke="#0d6efd" stroke-width="8"
-                                                        fill="none" stroke-dasharray="188" stroke-dashoffset="100" />
-                                                    <text x="35" y="40" text-anchor="middle" font-size="18"
-                                                        fill="#222">46%</text>
-                                                </svg>
-                                                <div class="small mt-2 text-primary fw-semibold">In Progress</div>
-                                            </div>
-                                            <div class="text-center">
-                                                <svg width="70" height="70">
-                                                    <circle cx="35" cy="35" r="30" stroke="#dc3545" stroke-width="8"
-                                                        fill="none" stroke-dasharray="188" stroke-dashoffset="163" />
-                                                    <text x="35" y="40" text-anchor="middle" font-size="18"
-                                                        fill="#222">13%</text>
-                                                </svg>
-                                                <div class="small mt-2 text-danger fw-semibold">Not Started</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                <!-- In Progress -->
+                <div class="text-center">
+                    <svg width="70" height="70">
+                        <circle cx="35" cy="35" r="30" stroke="#0d6efd" stroke-width="8"
+                                fill="none" stroke-dasharray="188"
+                                stroke-dashoffset="<?= getDashOffset($inProgressPct) ?>" />
+                        <text x="35" y="40" text-anchor="middle" font-size="18"
+                              fill="#222"><?= $inProgressPct ?>%</text>
+                    </svg>
+                    <div class="small mt-2 text-primary fw-semibold">In Progress</div>
+                </div>
+
+                <!-- Not Started -->
+                <div class="text-center">
+                    <svg width="70" height="70">
+                        <circle cx="35" cy="35" r="30" stroke="#dc3545" stroke-width="8"
+                                fill="none" stroke-dasharray="188"
+                                stroke-dashoffset="<?= getDashOffset($notStartedPct) ?>" />
+                        <text x="35" y="40" text-anchor="middle" font-size="18"
+                              fill="#222"><?= $notStartedPct ?>%</text>
+                    </svg>
+                    <div class="small mt-2 text-danger fw-semibold">Not Started</div>
+                </div>
+            </div>
+        </div>
+    </div>
+                            
+
+
                                 <div class="card shadow-sm">
-                                    <div class="card-body">
-                                        <div class="fw-bold mb-3 text-danger"><i class="bi bi-check2-circle"></i>
-                                            Completed Task</div>
-                                        <div class="mb-3">
-                                            <div class="card border-0 shadow-sm mb-2">
-                                                <div class="card-body d-flex">
-                                                    <div>
-                                                        <span class="badge bg-success mb-2">Completed</span>
-                                                        <h6 class="card-title mb-1">Walk the dog</h6>
-                                                        <p class="card-text mb-2">Take the dog to the park and bring
-                                                            treats as well.</p>
-                                                        <div class="small text-muted">Completed 2 days ago.</div>
-                                                    </div>
-                                                    <img src="https://images.unsplash.com/photo-1518717758536-85ae29035b6d?auto=format&fit=crop&w=80&q=80"
-                                                        alt="Dog" class="rounded ms-auto"
-                                                        style="width:80px; height:60px; object-fit:cover;">
-                                                </div>
-                                            </div>
-                                            <div class="card border-0 shadow-sm mb-2">
-                                                <div class="card-body d-flex">
-                                                    <div>
-                                                        <span class="badge bg-success mb-2">Completed</span>
-                                                        <h6 class="card-title mb-1">Conduct meeting</h6>
-                                                        <p class="card-text mb-2">Meet with the client and finalize
-                                                            requirements.</p>
-                                                        <div class="small text-muted">Completed 2 days ago.</div>
-                                                    </div>
-                                                    <img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=80&q=80"
-                                                        alt="Meeting" class="rounded ms-auto"
-                                                        style="width:80px; height:60px; object-fit:cover;">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+    <div class="card-body">
+        <div class="fw-bold mb-3 text-danger">
+            <i class="bi bi-check2-circle"></i> Completed Task
+        </div>
+        <div class="mb-3">
+            <?php if (!empty($completedTasks)): ?>
+                <?php foreach ($completedTasks as $task): ?>
+                    <?php
+                        $imgPath = !empty($task['task_img']) 
+                            ? '../uploads/' . htmlspecialchars($task['task_img'], ENT_QUOTES, 'UTF-8') 
+                            : '../assets/img/placeholder.png';
+
+                        // Format time difference
+                        $daysAgo = floor((time() - strtotime($task['task_due_date'])) / 86400);
+                        $completedText = $daysAgo === 0 ? "Completed today"
+                                        : ($daysAgo === 1 ? "Completed yesterday"
+                                        : "Completed $daysAgo days ago");
+                    ?>
+                    <div class="card border-0 shadow-sm mb-2">
+                        <div class="card-body d-flex">
+                            <div>
+                                <span class="badge bg-success mb-2">Completed</span>
+                                <h6 class="card-title mb-1"><?= htmlspecialchars($task['task_title']) ?></h6>
+                                <p class="card-text mb-2"><?= htmlspecialchars($task['task_description']) ?></p>
+                                <div class="small text-muted"><?= $completedText ?></div>
+                            </div>
+                            <img src="<?= $imgPath ?>" alt="Task Image" class="rounded ms-auto"
+                                 style="width:80px; height:60px; object-fit:cover;">
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <p class="text-muted">No completed tasks yet.</p>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>
+
                             </div>
                         </div>
                     </div>
@@ -234,4 +278,5 @@ try {
 </script>
 <script type="module" src="../scripts/components.js"></script>
 <script type="module" src="../scripts/chatbot.js"></script>
+<script type="module" src="../scripts/chatbot_task_flow.js"></script>
 </html>

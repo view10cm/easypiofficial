@@ -52,7 +52,7 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
     if (data.success) {
       setTimeout(() => {
         window.location.href = 'dashboard.php';
-      }, 3000);
+      }, 1000);
     } else {
       alert(data.message);
       resetButton();

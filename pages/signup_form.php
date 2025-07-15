@@ -49,7 +49,7 @@ if (!empty($_SESSION['account_id'])) {
           </div>
           <button type="submit" class="btn btn-register" id="registerBtn">Register</button>
           <div class="signin-link">
-            Already have an account? <a href="sign_in.html">Sign In</a>
+            Already have an account? <a href="sign_in.php">Sign In</a>
           </div>
         </form>
       </div>
