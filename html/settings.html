@@ -319,6 +319,25 @@
     </div>
   </div>
   </div>
+<div id="chatbot-container"></div>
 </body>
+
+<script>
+ fetch('../includes/chatbot.php')
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById('chatbot-container').innerHTML = html;
+    });
+</script>
+<script type="importmap">
+  {
+    "imports": {
+      "@google/generative-ai": "https://esm.run/@google/generative-ai"
+    }
+  }
+</script>
+
+
+<script type="module" src="../scripts/chatbot.js"></script>
 
 </html>
