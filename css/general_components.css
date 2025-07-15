@@ -92,7 +92,6 @@
         .btn:hover {
             background-color: #ebb915;
             color: black;
-            border-radius: 160px;
         }
 
         .input-group .btn {
@@ -102,5 +101,4 @@
         .input-group .btn:hover {
             background-color: #ebb915;
             color: black;
-            border-radius: 160px;
         }

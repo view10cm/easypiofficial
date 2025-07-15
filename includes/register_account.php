@@ -40,9 +40,12 @@ if ($stmt->fetch()) {
 // Hash the password
 $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
 
-// Insert user into database
-$stmt = $pdo->prepare("INSERT INTO accounts (username, email, password) VALUES (?, ?, ?)");
-$success = $stmt->execute([$username, $email, $hashedPassword]);
+// Set default profile picture filename
+$defaultProfilePic = '../assets/default_pp.jpg';
+
+// Insert user into database with default profile picture
+$stmt = $pdo->prepare("INSERT INTO accounts (username, email, password, profile_picture) VALUES (?, ?, ?, ?)");
+$success = $stmt->execute([$username, $email, $hashedPassword, $defaultProfilePic]);
 
 if ($success) {
     $lastId = $pdo->lastInsertId();
