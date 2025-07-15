@@ -4,7 +4,7 @@ require '../includes/db_connection.php';
 
 // If user is not logged in, redirect to sign-in
 if (empty($_SESSION['account_id'])) {
-    header('Location: ../pages/sign_in.html');
+    header('Location: ../pages/sign_in.php');
     exit;
 }
 
@@ -14,24 +14,30 @@ try {
     $stmt->execute(['id' => $_SESSION['account_id']]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    // If user not found, force logout
     if (!$user) {
         session_unset();
         session_destroy();
-        header('Location: ../pages/sign_in.html');
+        header('Location: ../pages/sign_in.php');
         exit;
     }
 
-    // Sanitize and set variables
+    // Set user variables
     $email = htmlspecialchars($user['email'], ENT_QUOTES, 'UTF-8');
     $profilePicture = !empty($user['profile_picture'])
         ? '../uploads/' . htmlspecialchars($user['profile_picture'], ENT_QUOTES, 'UTF-8')
         : '../assets/img/placeholder.png';
 
+    // Fetch task statuses
+    $statusStmt = $pdo->query("SELECT status_id, status_name FROM task_status");
+    $statuses = $statusStmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Fetch priorities
+$priorityStmt = $pdo->query("SELECT * FROM task_priority_levels ORDER BY priority_id ASC");
+$priorities = $priorityStmt->fetchAll(PDO::FETCH_ASSOC);
+
 } catch (PDOException $e) {
-    // On DB error, redirect to sign-in
     error_log('DB error: ' . $e->getMessage());
-    header('Location: ../pages/sign_in.html');
+    header('Location: ../pages/sign_in.php');
     exit;
 }
 ?>
@@ -70,7 +76,7 @@ try {
             <div class="d-flex justify-content-between align-items-center mb-2">
               <h5 class="card-title fw-bold mb-3" 
              style="color:#333; text-decoration: underline; text-decoration-color: #1286cc;; text-decoration-thickness: 2px;">
-                                    Dashboard</h5>
+                                    Task Categories</h5>
               <a href="dashboard.html" class="fw-semibold" style="color:#222; text-decoration:underline;">Go Back</a>
             </div>
 
@@ -78,364 +84,171 @@ try {
             <div class="mb-4">
               <div class="d-flex justify-content-between align-items-center mb-2">
                 <span class="fw-semibold" style="color:#222; border-bottom:2px solid #1286cc;;">Task Status</span>
-                <a href="#" class="fw-semibold" style="color:#1286cc;; text-decoration:none; font-size:1rem;"
-                  data-bs-toggle="modal" data-bs-target="#addTaskStatusModal">+ Add Task Status</a>
               </div>
               <div class="table-responsive">
                 <table id="taskStatusTable" class="table table-bordered align-middle"
                   style="border-radius:12px; overflow:hidden;">
                   <thead>
-                    <tr style="background:#f7f7f7;">
-                      <th style="width:60px;">SN</th>
-                      <th>Task Status</th>
-                      <th style="width:200px;">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr id="noTaskStatusRow">
-                      <td colspan="3" class="text-center text-muted">No Task Status, please create your Task Status</td>
-                    </tr>
-                    <!-- Existing status rows go here -->
-                  </tbody>
+                <tr style="background:#f7f7f7;">
+                <th style="width:100px; text-align: center; vertical-align: middle;">TS No.</th>
+                <th style="text-align: center; vertical-align: middle;">Task Status</th>
+               </tr>
+                </thead>
+                 <tbody>
+  <?php
+    $statusColors = [
+      'Not Started' => '#ff6b6b',
+      'In Progress' => '#17a2b8',
+      'Completed'   => '#28a745'
+    ];
+  ?>
+  <?php if (!empty($statuses)): ?>
+    <?php foreach ($statuses as $index => $status): ?>
+      <?php
+        $color = $statusColors[$status['status_name']] ?? '#6c757d'; // default gray
+      ?>
+      <tr>
+        <td style="text-align: center;"><?= $index + 1 ?></td>
+        <td style="text-align: center; color: <?= $color ?>; font-weight: bold;">
+          <?= htmlspecialchars($status['status_name']) ?>
+        </td>
+      </tr>
+    <?php endforeach; ?>
+  <?php else: ?>
+    <tr>
+      <td colspan="2" class="text-center text-muted">No Task Status, please create your Task Status</td>
+    </tr>
+  <?php endif; ?>
+</tbody>
+
+
                 </table>
               </div>
             </div>
 
-            <!-- Task Priority Table -->
-            <div class="mb-4">
-              <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="fw-semibold" style="color:#222; border-bottom:2px solid #1286cc;;">Task Priority</span>
-                <a href="#" class="fw-semibold" style="color:#1286cc;; text-decoration:none; font-size:1rem;"
-                  data-bs-toggle="modal" data-bs-target="#addTaskPriorityModal">+ Add Task Priority</a>
-              </div>
-              <div class="table-responsive">
-                <table id="taskPriorityTable" class="table table-bordered align-middle"
-                  style="border-radius:12px; overflow:hidden;">
-                  <thead>
-                    <tr style="background:#f7f7f7;">
-                      <th style="width:60px;">SN</th>
-                      <th>Task Priority</th>
-                      <th style="width:200px;">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr id="noTaskPriorityRow">
-                      <td colspan="3" class="text-center text-muted">No Task Priority, please create your Task Priority
-                      </td>
-                    </tr>
-                    <!-- Existing priority rows go here -->
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+        <!-- Task Priority Table -->
+<!-- Task Priority Section -->
+<div class="mb-4">
+  <div class="d-flex justify-content-between align-items-center mb-2">
+    <span class="fw-semibold" style="color:#222; border-bottom:2px solid #1286cc;">Task Priority</span>
+    <a href="#" class="fw-semibold" style="color:#1286cc; text-decoration:none; font-size:1rem;"
+      data-bs-toggle="modal" data-bs-target="#addTaskPriorityModal">+ Add Task Priority</a>
+  </div>
 
-    <!-- Add Task Status Modal -->
-    <div class="modal fade" id="addTaskStatusModal" tabindex="-1" aria-labelledby="addTaskStatusModalLabel"
-      aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="addTaskStatusModalLabel">Add Task Status</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <form>
-              <div class="mb-3">
-                <label for="taskStatusName" class="form-label">Task Status Name</label>
-                <input type="text" class="form-control" id="taskStatusName" placeholder="Enter status name">
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="button" class="btn" style="background:#1286cc;; color:white;" onclick="addTaskStatus()">Add
-              Status</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- End Add Task Status Modal -->
+  <div class="table-responsive">
+    <table id="taskPriorityTable" class="table table-bordered align-middle" style="border-radius:12px; overflow:hidden;">
+      <thead>
+        <tr style="background:#f7f7f7;">
+          <th style="width:100px;" class="text-center">TP No.</th>
+          <th class="text-center">Task Priority</th>
+          <th style="width:200px;" class="text-center">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php if (!empty($priorities)): ?>
+          <?php foreach ($priorities as $index => $priority): ?>
+            <tr data-priority-id="<?= $priority['priority_id'] ?>">
+              <td class="text-center"><?= $index + 1 ?></td>
+              <td class="fw-bold text-center"><?= htmlspecialchars($priority['priority_name']) ?></td>
+              <td class="text-center">
+                <button class="edit-btn btn btn-sm btn-warning" data-id="<?= $priority['priority_id'] ?>">
+                  <i class="bi bi-pencil-square"></i> Edit
+                </button>
+                <button class="delete-btn btn btn-sm btn-danger ms-2" data-id="<?= $priority['priority_id'] ?>">
+                  <i class="bi bi-trash"></i> Delete
+                </button>
+              </td>
+            </tr>
+          <?php endforeach; ?>
+        <?php else: ?>
+          <tr id="noTaskPriorityRow">
+            <td colspan="3" class="text-center text-muted">
+              No Task Priority, please create your Task Priority
+            </td>
+          </tr>
+        <?php endif; ?>
+      </tbody>
+    </table>
+  </div>
+</div>
 
-    <!-- Edit Task Status Modal -->
-    <div class="modal fade" id="editTaskStatusModal" tabindex="-1" aria-labelledby="editTaskStatusModalLabel"
-      aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="editTaskStatusModalLabel">Edit Task Status</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <form>
-              <div class="mb-3">
-                <label for="editTaskStatusName" class="form-label">Task Status Name</label>
-                <input type="text" class="form-control" id="editTaskStatusName">
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="button" class="btn" style="background:#1286cc;; color:white;"
-              id="saveTaskStatusEdit">Save</button>
+<!-- Add Task Priority Modal -->
+<div class="modal fade" id="addTaskPriorityModal" tabindex="-1" aria-labelledby="addTaskPriorityModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="addPriorityForm" enctype="multipart/form-data">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addTaskPriorityModalLabel">Add Task Priority</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="taskPriorityName" class="form-label">Task Priority Name</label>
+            <input type="text" class="form-control" id="taskPriorityName" name="priority" placeholder="Enter priority name" required>
           </div>
         </div>
-      </div>
-    </div>
-    <!-- End Edit Task Status Modal -->
-
-    <!-- Add Task Priority Modal -->
-    <div class="modal fade" id="addTaskPriorityModal" tabindex="-1" aria-labelledby="addTaskPriorityModalLabel"
-      aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="addTaskPriorityModalLabel">Add Task Priority</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <form>
-              <div class="mb-3">
-                <label for="taskPriorityName" class="form-label">Task Priority Name</label>
-                <input type="text" class="form-control" id="taskPriorityName" placeholder="Enter priority name">
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="button" class="btn" style="background:#1286cc;; color:white;" onclick="addTaskPriority()">Add
-              Priority</button>
-          </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button id="addPriorityBtn" type="submit" class="btn" style="background:#1286cc; color:white;">
+            Add Priority
+          </button>
         </div>
-      </div>
+      </form>
     </div>
+  </div>
+</div>
     <!-- End Add Task Priority Modal -->
 
     <!-- Edit Task Priority Modal -->
-    <div class="modal fade" id="editTaskPriorityModal" tabindex="-1" aria-labelledby="editTaskPriorityModalLabel"
-      aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="editTaskPriorityModalLabel">Edit Task Priority</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <form>
-              <div class="mb-3">
-                <label for="editTaskPriorityName" class="form-label">Task Priority Name</label>
-                <input type="text" class="form-control" id="editTaskPriorityName">
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="button" class="btn" style="background:#ff6b6b; color:white;"
-              id="saveTaskPriorityEdit">Save</button>
+    <div class="modal fade" id="editTaskPriorityModal" tabindex="-1" aria-labelledby="editTaskPriorityModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editTaskPriorityModalLabel">Edit Task Priority</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="editPriorityForm">
+        <div class="modal-body">
+          <input type="hidden" id="editPriorityId">
+          <div class="mb-3">
+            <label for="editTaskPriorityName" class="form-label">Task Priority Name</label>
+            <input type="text" class="form-control" id="editTaskPriorityName" required>
           </div>
         </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn" style="background:#ff6b6b; color:white;">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+    <!-- End Edit Task Priority Modal -->
+    <!-- Delete Priority Modal -->
+<div class="modal fade" id="deletePriorityModal" tabindex="-1" aria-labelledby="deletePriorityModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="deletePriorityModalLabel">Confirm Delete</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center">
+        <p class="fs-5 fw-semibold text-danger">Are you sure you want to delete this task priority?</p>
+        <p class="text-muted">This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger" id="confirmDeletePriorityBtn">Delete</button>
       </div>
     </div>
-    <!-- End Edit Task Priority Modal -->
-        <div id="chatbot-container"></div>
+  </div>
+</div>
+
   </div>
   <div id="chatbot-container"></div>
-
-  <script type="importmap">
-  {
-    "imports": {
-      "@google/generative-ai": "https://esm.run/@google/generative-ai"
-    }
-  }
-</script>
-
-<script>
-     // Load Sidebar
-  fetch('sidebar.php')
-    .then(res => res.text())
-    .then(html => {
-      document.getElementById('sidebar-container').innerHTML = html;
-    });
-
-    fetch('../includes/chatbot.php')
-    .then(res => res.text())
-    .then(html => {
-      document.getElementById('chatbot-container').innerHTML = html;
-    });
-</script>
-
-<script type="module" src="../scripts/chatbot.js"></script>
-
-
-  <script>
-    let currentEditRow = null;
-    let currentEditType = null;
-    let currentEditPriorityRow = null;
-
-    function showEditModal(btn, tableId) {
-      currentEditRow = btn.closest('tr');
-      currentEditType = tableId;
-      const nameCell = currentEditRow.cells[1];
-      const currentValue = nameCell.textContent;
-
-      if (tableId === 'taskStatusTable') {
-        document.getElementById('editTaskStatusName').value = currentValue;
-        const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editTaskStatusModal'));
-        modal.show();
-      }
-    }
-
-    function showEditPriorityModal(btn) {
-      currentEditPriorityRow = btn.closest('tr');
-      const nameCell = currentEditPriorityRow.cells[1];
-      document.getElementById('editTaskPriorityName').value = nameCell.textContent;
-      const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editTaskPriorityModal'));
-      modal.show();
-    }
-
-    document.getElementById('saveTaskStatusEdit').onclick = function () {
-      if (currentEditRow && currentEditType === 'taskStatusTable') {
-        const newValue = document.getElementById('editTaskStatusName').value.trim();
-        if (newValue) currentEditRow.cells[1].textContent = newValue;
-        bootstrap.Modal.getOrCreateInstance(document.getElementById('editTaskStatusModal')).hide();
-      }
-    };
-
-    document.getElementById('saveTaskPriorityEdit').onclick = function () {
-      if (currentEditPriorityRow) {
-        const newValue = document.getElementById('editTaskPriorityName').value.trim();
-        if (newValue) currentEditPriorityRow.cells[1].textContent = newValue;
-        bootstrap.Modal.getOrCreateInstance(document.getElementById('editTaskPriorityModal')).hide();
-      }
-    };
-
-    function addTaskStatus() {
-      const input = document.getElementById('taskStatusName');
-      const value = input.value.trim();
-      if (!value) return;
-
-      const table = document.getElementById('taskStatusTable').getElementsByTagName('tbody')[0];
-
-      // Remove "No Task Status" row if present
-      const noStatusRow = document.getElementById('noTaskStatusRow');
-      if (noStatusRow) noStatusRow.remove();
-
-      const rowCount = table.rows.length + 1;
-      const newRow = table.insertRow();
-      newRow.innerHTML = `
-    <td>${rowCount}</td>
-    <td>${value}</td>
-    <td>
-      <button class="btn btn-sm" onclick="showEditModal(this, 'taskStatusTable')" style="background:#ff6b6b; color:white; border-radius:6px;">
-        <i class="bi bi-pencil-square"></i> Edit
-      </button>
-      <button class="btn btn-sm ms-2" onclick="deleteRow(this)" style="background:#ff6b6b; color:white; border-radius:6px;">
-        <i class="bi bi-trash"></i> Delete
-      </button>
-    </td>
-  `;
-
-      input.value = '';
-      const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('addTaskStatusModal'));
-      modal.hide();
-    }
-
-    // Delete row function for Task Status table only
-    function deleteRow(btn) {
-      const row = btn.closest('tr');
-      const tableBody = row.parentNode;
-      row.remove();
-      updateSerialNumbers('taskStatusTable');
-
-      // Check Task Status table for remaining data rows
-      if (tableBody === document.getElementById('taskStatusTable').getElementsByTagName('tbody')[0]) {
-        let actualRows = 0;
-        for (let r of tableBody.rows) {
-          if (r.id !== 'noTaskStatusRow') actualRows++;
-        }
-        if (actualRows === 0) {
-          const noStatusRow = document.createElement('tr');
-          noStatusRow.id = 'noTaskStatusRow';
-          noStatusRow.innerHTML = `<td colspan="3" class="text-center text-muted">No Task Status, please create your Task Status</td>`;
-          tableBody.appendChild(noStatusRow);
-        }
-      }
-    }
-
-    function addTaskPriority() {
-      const input = document.getElementById('taskPriorityName');
-      const value = input.value.trim();
-      if (!value) return;
-
-      const table = document.getElementById('taskPriorityTable').getElementsByTagName('tbody')[0];
-
-      // Remove "No Task Priority" row if present
-      const noPriorityRow = document.getElementById('noTaskPriorityRow');
-      if (noPriorityRow) noPriorityRow.remove();
-
-      const rowCount = table.rows.length + 1;
-      const newRow = table.insertRow();
-      newRow.innerHTML = `
-    <td>${rowCount}</td>
-    <td>${value}</td>
-    <td>
-      <button class="btn btn-sm" onclick="showEditPriorityModal(this)" style="background:#ff6b6b; color:white; border-radius:6px;">
-        <i class="bi bi-pencil-square"></i> Edit
-      </button>
-      <button class="btn btn-sm ms-2" onclick="deletePriorityRow(this)" style="background:#ff6b6b; color:white; border-radius:6px;">
-        <i class="bi bi-trash"></i> Delete
-      </button>
-    </td>
-  `;
-
-      input.value = '';
-      const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('addTaskPriorityModal'));
-      modal.hide();
-      updateSerialNumbers('taskPriorityTable');
-    }
-
-    function deletePriorityRow(btn) {
-      const row = btn.closest('tr');
-      const tableBody = row.parentNode;
-      row.remove();
-      updateSerialNumbers('taskPriorityTable');
-
-      // Check Task Priority table for remaining data rows
-      if (tableBody === document.getElementById('taskPriorityTable').getElementsByTagName('tbody')[0]) {
-        let actualRows = 0;
-        for (let r of tableBody.rows) {
-          if (r.id !== 'noTaskPriorityRow') actualRows++;
-        }
-        if (actualRows === 0) {
-          const noPriorityRow = document.createElement('tr');
-          noPriorityRow.id = 'noTaskPriorityRow';
-          noPriorityRow.innerHTML = `<td colspan="3" class="text-center text-muted">No Task Priority, please create your Task Priority</td>`;
-          tableBody.appendChild(noPriorityRow);
-        }
-      }
-    }
-
-    // Update SN numbers after deletion or addition for both tables
-    function updateSerialNumbers(tableId) {
-      const table = document.getElementById(tableId);
-      if (!table) return;
-      const rows = table.getElementsByTagName('tbody')[0].rows;
-      let sn = 1;
-      for (let i = 0; i < rows.length; i++) {
-        // Skip message row
-        if ((tableId === 'taskStatusTable' && rows[i].id === 'noTaskStatusRow') ||
-          (tableId === 'taskPriorityTable' && rows[i].id === 'noTaskPriorityRow')) {
-          rows[i].cells[0].textContent = ""; // Remove SN for message row
-          continue;
-        }
-        rows[i].cells[0].textContent = sn++;
-      }
-    }
-  </script>
-  <script type="importmap">
+</body>
+<script type="importmap">
   {
     "imports": {
       "@google/generative-ai": "https://esm.run/@google/generative-ai"
@@ -443,9 +256,7 @@ try {
   }
 </script>
 <script type="module" src="../scripts/components.js"></script>
+<script type="module" src="../scripts/taskCategories.js"></script>
 <script type="module" src="../scripts/chatbot.js"></script>
-
-
-</body>
-
+<script type="module" src="../scripts/chatbot_task_flow.js"></script>
 </html>

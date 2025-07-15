@@ -2,243 +2,186 @@
 session_start();
 require '../includes/db_connection.php';
 
-// If user is not logged in, redirect to sign-in
+// Redirect if not logged in
 if (empty($_SESSION['account_id'])) {
-    header('Location: ../pages/sign_in.html');
+    header('Location: ../pages/sign_in.php');
     exit;
 }
 
 try {
-    // Fetch user data
     $stmt = $pdo->prepare("SELECT email, profile_picture FROM accounts WHERE account_id = :id LIMIT 1");
     $stmt->execute(['id' => $_SESSION['account_id']]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    // If user not found, force logout
     if (!$user) {
         session_unset();
         session_destroy();
-        header('Location: ../pages/sign_in.html');
+        header('Location: ../pages/sign_in.php');
         exit;
     }
 
-    // Sanitize and set variables
     $email = htmlspecialchars($user['email'], ENT_QUOTES, 'UTF-8');
     $profilePicture = !empty($user['profile_picture'])
         ? '../uploads/' . htmlspecialchars($user['profile_picture'], ENT_QUOTES, 'UTF-8')
         : '../assets/img/placeholder.png';
 
 } catch (PDOException $e) {
-    // On DB error, redirect to sign-in
     error_log('DB error: ' . $e->getMessage());
-    header('Location: ../pages/sign_in.html');
+    header('Location: ../pages/sign_in.php');
     exit;
 }
+
+$stmt = $pdo->prepare("
+    SELECT t.task_id, t.task_title, t.task_description, t.task_due_date, t.task_img,
+           p.priority_name, s.status_name
+    FROM tasks t
+    LEFT JOIN task_priority_levels p ON t.priority_id = p.priority_id
+    LEFT JOIN task_status s ON t.status_id = s.status_id
+    WHERE t.account_id = :account_id
+      AND DATE(t.task_due_date) = CURDATE()
+    ORDER BY t.task_due_date ASC
+");
+
+$stmt->execute(['account_id' => $_SESSION['account_id']]);
+$tasks = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
+$statusColors = [
+    'Not Started' => '#ff6b6b',
+    'In Progress' => '#17a2b8',
+    'Completed'   => '#28a745'
+];
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EasyPi - User Dashboard</title>
-    <link rel="icon" type="image/png" href="../assets/titlelogo.png">
-
-    <link rel="stylesheet" href="../css/general_components.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
-        crossorigin="anonymous"></script>
-   
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <meta charset="UTF-8">
+  <title>EasyPi - Dashboard</title>
+  <link rel="icon" type="image/png" href="../assets/titlelogo.png">
+  <link rel="stylesheet" href="../css/general_components.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 </head>
-
 <body>
-    <!-- Navbar -->
-    <div id="navbar-container"></div>
-    <!-- Content -->
-    <div class="content-wrapper">
-        <div id="sidebar-container"></div>
+<div id="navbar-container"></div>
+<div class="content-wrapper">
+  <div id="sidebar-container"></div>
+  <div class="main-content p-4">
+    <div class="row">
+      <!-- Left Column - Task List -->
+<div class="col-md-6 pe-3">
+  <div class="card shadow-sm h-100" style="border-radius:16px;">
+    <div class="card-body p-4">
+      <h5 class="card-title fw-bold mb-4 text-decoration-underline" style="color:#333; text-decoration-color: #1286cc;">Vital Tasks</h5>
 
-        <!-- Scrollable Main Content -->
-        <div class="main-content">
-            <div style="margin-left:10px; width:100%;" class="p-4">
-                <div class="row h-100">
-                    <!-- Left Column - Task List -->
-                    <div class="col-md-6 pe-3">
-                        <div class="card shadow-sm h-100" style="border-radius:16px;">
-                            <div class="card-body p-4">
-
-                                <h5 class="card-title fw-bold mb-4"
-                                    style="color:#333; text-decoration: underline; text-decoration-color: #1286cc;; text-decoration-thickness: 2px;">
-                                    Vital Tasks</h5>
-
-                                <!-- Task Item 1 -->
-                                <div class="card mb-3 border-0 shadow-sm"
-                                    style="border-radius:12px; background:#f8f9fa;">
-                                    <div class="card-body p-3">
-                                        <div class="row align-items-center">
-                                            <div class="col-auto">
-                                                <div class="rounded-circle d-flex align-items-center justify-content-center"
-                                                    style="width:12px; height:12px; border:2px solid #ff6b6b;"></div>
-                                            </div>
-                                            <div class="col">
-                                                <div class="d-flex justify-content-between align-items-start">
-                                                    <div class="flex-grow-1">
-                                                        <h6 class="mb-1 fw-semibold" style="color:#333;">Submit
-                                                            Documents</h6>
-                                                        <p class="text-muted mb-2" style="font-size:0.9rem;">Make sure
-                                                            to submit all the necessary docum.....</p>
-                                                        <div class="d-flex gap-3">
-                                                            <small class="text-muted">Priority: <span
-                                                                    style="color:#ff6b6b;">Extreme</span></small>
-                                                            <small class="text-muted">Status: <span
-                                                                    style="color:#ff6b6b;">Not Started</span></small>
-                                                            <small class="text-muted">Created on: 20/06/2023</small>
-                                                        </div>
-                                                    </div>
-                                                    <div class="ms-2">
-                                                        <img src="https://via.placeholder.com/50x35/e9ecef/666?text=Doc"
-                                                            alt="Task preview" class="rounded"
-                                                            style="width:50px; height:35px; object-fit:cover;">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Task Item 2 -->
-                                <div class="card mb-3 border-0 shadow-sm"
-                                    style="border-radius:12px; background:#f8f9fa;">
-                                    <div class="card-body p-3">
-                                        <div class="row align-items-center">
-                                            <div class="col-auto">
-                                                <div class="rounded-circle d-flex align-items-center justify-content-center"
-                                                    style="width:12px; height:12px; border:2px solid #6c757d;"></div>
-                                            </div>
-                                            <div class="col">
-                                                <div class="d-flex justify-content-between align-items-start">
-                                                    <div class="flex-grow-1">
-                                                        <h6 class="mb-1 fw-semibold" style="color:#333;">Complete
-                                                            assignments</h6>
-                                                        <p class="text-muted mb-2" style="font-size:0.9rem;">The
-                                                            assignments must be completed to pass final year.....</p>
-                                                        <div class="d-flex gap-3">
-                                                            <small class="text-muted">Priority: <span
-                                                                    style="color:#17a2b8;">Moderate</span></small>
-                                                            <small class="text-muted">Status: <span
-                                                                    style="color:#ffc107;">In Progress</span></small>
-                                                            <small class="text-muted">Created on: 20/06/2023</small>
-                                                        </div>
-                                                    </div>
-                                                    <div class="ms-2">
-                                                        <img src="https://via.placeholder.com/50x35/e9ecef/666?text=Assign"
-                                                            alt="Task preview" class="rounded"
-                                                            style="width:50px; height:35px; object-fit:cover;">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Right Column - Task Details -->
-                    <div class="col-md-6 ps-3">
-                        <div class="card shadow-sm h-100" style="border-radius:16px;">
-                            <div class="card-body p-4">
-                                <!-- Task Header with Image -->
-                                <div class="position-relative mb-4">
-
-                                </div>
-
-                                <!-- Task Title with Icons -->
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <h4 class="fw-bold mb-0" style="color:#333;">Submit Documents</h4>
-                                    <div class="d-flex gap-2">
-
-                                    </div>
-                                </div>
-
-                                <!-- Priority and Status -->
-                                <div class="row mb-4">
-                                    <div class="col-6">
-                                        <div class="d-flex align-items-center">
-                                            <span class="me-2" style="color:#666;">Priority:</span>
-                                            <span class="badge rounded-pill"
-                                                style="background:#ff6b6b; color:white;">Extreme</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="d-flex align-items-center">
-                                            <span class="me-2" style="color:#666;">Status:</span>
-                                            <span class="badge rounded-pill"
-                                                style="background:#ff6b6b; color:white;">Not Started</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <small class="text-muted">Created on: 20/06/2023</small>
-                                </div>
-
-                                <!-- Task Details -->
-                                <div class="mb-4">
-                                    <div class="mb-3">
-                                        <strong style="color:#333;">Task Title:</strong>
-                                        <span class="text-muted ms-2">Document Submission.</span>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <strong style="color:#333;">Objective:</strong>
-                                        <span class="text-muted ms-2">To submit required documents for something
-                                            important</span>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <strong style="color:#333;">Task Description:</strong>
-                                        <p class="text-muted mt-2" style="font-size:0.95rem; line-height:1.6;">
-                                            Review the list of documents required for submission and ensure all
-                                            necessary documents are ready. Organize the documents accordingly and
-                                            scan them if physical copies need to be submitted digitally. Rename the
-                                            scanned files appropriately for easy identification and verify the
-                                            accepted file formats. Upload the documents securely to the designated
-                                            platform, double-check for accuracy, and obtain confirmation of
-                                            successful submission. Follow up if necessary to ensure proper
-                                            processing.
-                                        </p>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <strong style="color:#333;">Additional Notes:</strong>
-                                        <ul class="text-muted mt-2" style="font-size:0.95rem; line-height:1.6;">
-                                            <li>Ensure that the documents are authentic and up-to-date.</li>
-                                            <li>Maintain confidentiality and security of sensitive information during
-                                                submission.</li>
-                                            <li>If there are specific guidelines or deadlines for submission, adhere to
-                                                them diligently.</li>
-                                        </ul>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <strong style="color:#333;">Deadline for Submission:</strong>
-                                        <span class="text-muted ms-2">End of Day</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+      <?php if (!empty($tasks)): ?>
+        <?php foreach ($tasks as $task): ?>
+          <?php $statusColor = $statusColors[$task['status_name']] ?? '#6c757d'; ?>
+          <div class="card mb-3 border-0 shadow-sm"
+               style="border-radius:12px; background:#f8f9fa; cursor:pointer;"
+               onclick="loadTaskDetails(<?= (int)$task['task_id'] ?>)">
+            <div class="card-body p-3">
+              <div class="row align-items-center">
+                <div class="col-auto">
+                  <div class="rounded-circle d-flex align-items-center justify-content-center"
+                       style="width:12px; height:12px; border:2px solid <?= $statusColor ?>;"></div>
                 </div>
+                <div class="col">
+                  <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                      <h6 class="mb-1 fw-semibold" style="color:#333;">
+                        <?= htmlspecialchars($task['task_title']) ?>
+                      </h6>
+                      <p class="text-muted mb-2" style="font-size:0.9rem;">
+                        <?= htmlspecialchars(mb_strimwidth($task['task_description'], 0, 60, '...')) ?>
+                      </p>
+                      <div class="d-flex gap-3">
+                        <small class="text-muted">Priority:
+                          <span><?= htmlspecialchars($task['priority_name'] ?? 'Unknown') ?></span>
+                        </small>
+                        <small class="text-muted">Status:
+                          <span style="color:<?= $statusColor ?>;"><?= htmlspecialchars($task['status_name'] ?? 'Unknown') ?></span>
+                        </small>
+                        <small class="text-muted">Due: <?= date("d/m/Y", strtotime($task['task_due_date'])) ?></small>
+                      </div>
+                    </div>
+                    <div class="ms-2">
+                      <img src="<?= $task['task_img'] ? '../uploads/' . htmlspecialchars($task['task_img']) : 'https://via.placeholder.com/50x35/e9ecef/666?text=NoImg' ?>"
+                           alt="Task image" class="rounded" style="width:50px; height:35px; object-fit:cover;">
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
+          </div>
+        <?php endforeach; ?>
+      <?php else: ?>
+        <center><p class="text-muted">You have no important tasks for today.</p></center>
+      <?php endif; ?>
+    </div>
+  </div>
+</div>
+
+
+     <!-- Right Column - Task Details -->
+<div class="col-md-6 ps-3 d-flex flex-column">
+  <div class="card shadow-sm h-100" style="border-radius:16px;">
+    <div class="card-body p-4 d-flex flex-column justify-content-center" id="task-details-container">
+
+      <!-- Empty State -->
+      <div class="text-center" id="emptyDetails">
+        <div class="mb-4">
+          <i class="bi bi-card-text" style="font-size: 3rem; color: #e9ecef;"></i>
         </div>
+        <h5 class="text-muted fw-bold mb-3 text-center">Select a task to view details</h5>
+        <p class="text-muted" style="font-size: 1rem;">
+          Click on a task from the left panel to see its details here
+        </p>
+      </div>
+
+      <!-- Task Details (will be filled dynamically) -->
+      <div id="taskDetails" class="d-none">
+        <div class="position-relative mb-4 text-center">
+          <img id="task-img" class="rounded shadow-sm" style="max-width: 100%; max-height: 200px; object-fit: cover;">
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h4 class="fw-bold mb-0" id="task-title" style="color:#333;"></h4>
+        </div>
+
+        <div class="row mb-4">
+          <div class="col-6">
+            <div class="d-flex align-items-center">
+              <span class="me-2" style="color:#666;">Priority:</span>
+              <span class="badge rounded-pill" id="task-priority" style="background:#ccc; color:#fff;"></span>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="d-flex align-items-center">
+              <span class="me-2" style="color:#666;">Status:</span>
+              <span class="badge rounded-pill" id="task-status" style="background:#ccc; color:#fff;"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <small class="text-muted">Deadline: <span id="task-deadline"></span></small>
+        </div>
+
+        <div class="mb-3">
+          <strong style="color:#333;">Task Description:</strong>
+          <p class="text-muted mt-2" id="task-description" style="font-size:0.95rem; line-height:1.6;"></p>
+        </div>
+      </div>
     </div>
-    </div>
-    <div id="chatbot-container"></div>
+  </div>
+</div>
+
+
+<div id="chatbot-container"></div>
 </body>
+<script src="../scripts/vitalTask.js" defer></script>
 <script type="importmap">
   {
     "imports": {
@@ -248,4 +191,5 @@ try {
 </script>
 <script type="module" src="../scripts/components.js"></script>
 <script type="module" src="../scripts/chatbot.js"></script>
+<script type="module" src="../scripts/chatbot_task_flow.js"></script>
 </html>

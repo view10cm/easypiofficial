@@ -4,7 +4,7 @@ require '../includes/db_connection.php';
 
 // If user is not logged in, redirect to sign-in
 if (empty($_SESSION['account_id'])) {
-    header('Location: ../pages/sign_in.html');
+    header('Location: ../pages/sign_in.php');
     exit;
 }
 
@@ -18,7 +18,7 @@ try {
     if (!$user) {
         session_unset();
         session_destroy();
-        header('Location: ../pages/sign_in.html');
+        header('Location: ../pages/sign_in.php');
         exit;
     }
 
@@ -31,7 +31,7 @@ try {
 } catch (PDOException $e) {
     // On DB error, redirect to sign-in
     error_log('DB error: ' . $e->getMessage());
-    header('Location: ../pages/sign_in.html');
+    header('Location: ../pages/sign_in.php');
     exit;
 }
 ?>
@@ -191,4 +191,5 @@ try {
 </script>
 <script type="module" src="../scripts/components.js"></script>
 <script type="module" src="../scripts/chatbot.js"></script>
+<script type="module" src="../scripts/chatbot_task_flow.js"></script>
 </html>

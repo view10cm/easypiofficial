@@ -78,7 +78,7 @@ document.getElementById('signupForm').addEventListener('submit', async function 
         registerBtn.textContent = 'Redirecting...';
         setTimeout(() => {
           window.location.href = 'sign_in.html?registered=1';
-        }, 3000);
+        }, 1000);
       } else {
         // Reset form only if it's a duplicate username or email
         const duplicateMessage = 'Username or email already exists.';

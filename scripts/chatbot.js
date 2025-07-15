@@ -16,6 +16,18 @@ Task Management
 Q: How do I add a new task in EasyPi?
 A: To add a task, go to the myAdd Task page. Enter the task title, select the priority level (Low, Medium, or High), and choose the status (To Do, In Progress, Done). Then click Add or Save Task.
 
+Q: Can Pie-chan help me create a task?
+A: Yes! 🥧 Pie-chan will guide you step-by-step with the following questions:
+1. Task Title – What’s the title of your task?
+2. Description – Can you give a short description?
+3. Deadline – When is it due? (Use format: YYYY-MM-DDTHH:MM)
+   - Note: Past dates and times are not accepted.
+4. Priority – Choose one (Low, Medium, High)
+5. Status – Choose one (To Do, In Progress, Done)
+6. Task Image – The default image will be used: ../assets/working.png
+
+Once all information is confirmed, Pie-chan will save the task for you! 🎉
+
 Q: What are the available task priorities?
 A: EasyPi lets you set a task’s priority to Low, Medium, or High based on how important or urgent the task is.
 
@@ -193,6 +205,25 @@ Pie-chan:`;
         console.error("Error generating bot response:", error);
         return "Sorry, I'm having trouble connecting right now. But I'm still here for you! 🥧";
     }
+    async function fetchTaskMeta() {
+    const res = await fetch('../includes/get_task_meta.php');
+    return await res.json();
+}
+
+async function submitNewTask(taskData) {
+    const res = await fetch('../includes/ai_add_task.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(taskData)
+    });
+    return await res.json();
+}
+if (conversationStep) {
+    await handleTaskInput(message);
+    return;
+}
 }
 
 // Close chat when clicking outside
