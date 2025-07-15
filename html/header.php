@@ -1,10 +1,8 @@
-<nav class="navbar bg-light px-4 py-3 shadow-sm" style="border-bottom:1px solid #ddd;">
+<nav class="navbar bg-light px-4 py-2 shadow-sm" style="border-bottom:1px solid #ddd;">
         <div class="container-fluid">
             <div class="row w-100 align-items-center">
                 <div class="col-auto">
-                    <span class="fs-3 fw-bold">
-                        <span style="color:#1286cc;">Easy</span><span style="color:#222;">Pi</span>
-                    </span>
+                       <img src="../assets/easyPiLogo.png" alt="EasyPi Logo" style="height:50px; width:150px;">
                 </div>
                 <div class="col d-flex justify-content-center">
                     <form style="max-width:600px; width:100%;">
