@@ -1,3 +1,40 @@
+<?php
+session_start();
+require '../includes/db_connection.php';
+
+// If user is not logged in, redirect to sign-in
+if (empty($_SESSION['account_id'])) {
+    header('Location: ../pages/sign_in.html');
+    exit;
+}
+
+try {
+    // Fetch user data
+    $stmt = $pdo->prepare("SELECT email, profile_picture FROM accounts WHERE account_id = :id LIMIT 1");
+    $stmt->execute(['id' => $_SESSION['account_id']]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    // If user not found, force logout
+    if (!$user) {
+        session_unset();
+        session_destroy();
+        header('Location: ../pages/sign_in.html');
+        exit;
+    }
+
+    // Sanitize and set variables
+    $email = htmlspecialchars($user['email'], ENT_QUOTES, 'UTF-8');
+    $profilePicture = !empty($user['profile_picture'])
+        ? '../uploads/' . htmlspecialchars($user['profile_picture'], ENT_QUOTES, 'UTF-8')
+        : '../assets/img/placeholder.png';
+
+} catch (PDOException $e) {
+    // On DB error, redirect to sign-in
+    error_log('DB error: ' . $e->getMessage());
+    header('Location: ../pages/sign_in.html');
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -145,8 +182,6 @@
   </div>
   <div id="chatbot-container"></div>
 </body>
-
-<script>
 <script type="importmap">
   {
     "imports": {

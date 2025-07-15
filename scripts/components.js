@@ -1,12 +1,14 @@
+ history.pushState(null, null, location.href);
+;
 // Load Navbar
-fetch('header.php')
+fetch('../components/header.php')
   .then(res => res.text())
   .then(html => {
     document.getElementById('navbar-container').innerHTML = html;
   });
 
 // Load Sidebar and then highlight active link
-fetch('sidebar.php')
+fetch('../components/sidebar.php')
   .then(res => res.text())
   .then(html => {
     document.getElementById('sidebar-container').innerHTML = html;
@@ -25,12 +27,10 @@ fetch('sidebar.php')
   });
 
 // Load Chatbot
-fetch('../includes/chatbot.php')
+fetch('../components/chatbot.php')
   .then(res => res.text())
   .then(html => {
     document.getElementById('chatbot-container').innerHTML = html;
   });
-
-
 
 
