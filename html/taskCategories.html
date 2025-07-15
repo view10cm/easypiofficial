@@ -203,8 +203,35 @@
       </div>
     </div>
     <!-- End Edit Task Priority Modal -->
+        <div id="chatbot-container"></div>
   </div>
   <div id="chatbot-container"></div>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "@google/generative-ai": "https://esm.run/@google/generative-ai"
+    }
+  }
+</script>
+
+<script>
+     // Load Sidebar
+  fetch('sidebar.php')
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById('sidebar-container').innerHTML = html;
+    });
+
+    fetch('../includes/chatbot.php')
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById('chatbot-container').innerHTML = html;
+    });
+</script>
+
+<script type="module" src="../scripts/chatbot.js"></script>
+
 
   <script>
     let currentEditRow = null;

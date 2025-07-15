@@ -12,7 +12,7 @@
             width: 60px;
             height: 60px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);   overflow: hidden;
             border: none;
             color: white;
             font-size: 1.5rem;
@@ -43,8 +43,7 @@
             height: 600px;
             border-radius: 20px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            overflow: hidden;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);   overflow: hidden;
             z-index: 1001;
             transform: translateY(100%) scale(0.8);
             opacity: 0;
@@ -78,7 +77,7 @@
         .chat-header h2 {
             color: #667eea;
             margin: 0;
-            font-weight: 600;
+            font-weight: 800;
             font-size: 1.5rem;
         }
         
@@ -86,7 +85,7 @@
             width: 50px;
             height: 50px;
             border-radius: 50%;
-            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);   overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -190,7 +189,7 @@
         }
         
         .send {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+             background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);   overflow: hidden;
             border: none;
             color: white;
             padding: 15px 20px;
@@ -199,7 +198,7 @@
         }
         
         .send:hover:not(:disabled) {
-            background: linear-gradient(135deg, #5a67d8, #6b46c1);
+            background: linear-gradient(135deg, #4facfe, #015ba5ff);
             transform: translateY(-1px);
         }
         
@@ -278,7 +277,7 @@
     <div class="chatwindow" id="chatWindow">
         <div class="chat-header">
             <div class="avatar">
-                <i class="fas fa-robot"></i>
+                  <img src="../assets/pie-logo.png" alt="Pie Logo" style="width: 50px; height: 50px;"> 
             </div>
             <h2>Pie-chan</h2>
             <button class="close" onclick="closeChatbot()">
