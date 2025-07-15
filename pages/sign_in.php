@@ -38,7 +38,7 @@ if (!empty($_SESSION['account_id'])) {
           </div>
           <button type="submit" class="btn btn-login" id="loginBtn">Login</button>
           <div class="register-link">
-            Don’t have an account? <a href="signup_form.html">Create One</a>
+            Don’t have an account? <a href="signup_form.php">Create One</a>
           </div>
         </form>
       </div>
