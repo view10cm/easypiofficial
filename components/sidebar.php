@@ -26,7 +26,7 @@ try {
     $email = htmlspecialchars($user['email'], ENT_QUOTES, 'UTF-8');
     $profilePicture = !empty($user['profile_picture'])
         ? '../uploads/' . htmlspecialchars($user['profile_picture'], ENT_QUOTES, 'UTF-8')
-        : '../assets/img/placeholder.png';
+        : '../assets/default_pp.jpg';
 
 } catch (PDOException $e) {
     error_log('DB error: ' . $e->getMessage());
