@@ -33,6 +33,7 @@ CREATE TABLE tasks (
     priority_id INT NOT NULL,
     status_id INT NOT NULL,
     task_due_date DATE NOT NULL,
+    task_img VARCHAR(255) DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (account_id) REFERENCES accounts(account_id) ON DELETE CASCADE,
