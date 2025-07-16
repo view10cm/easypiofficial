@@ -23,7 +23,7 @@ try {
     $email = htmlspecialchars($user['email'], ENT_QUOTES, 'UTF-8');
     $profilePicture = !empty($user['profile_picture'])
         ? '../uploads/' . htmlspecialchars($user['profile_picture'], ENT_QUOTES, 'UTF-8')
-        : '../assets/img/placeholder.png';
+        : '../assets/placeholder.png';
 
 } catch (PDOException $e) {
     error_log('DB error: ' . $e->getMessage());
@@ -107,7 +107,7 @@ $statusColors = [
                       </div>
                     </div>
                     <div class="ms-2">
-                      <img src="<?= $task['task_img'] ? '../uploads/' . htmlspecialchars($task['task_img']) : 'https://via.placeholder.com/50x35/e9ecef/666?text=NoImg' ?>"
+                      <img src="<?= $task['task_img'] ? '../uploads/tasks/' . htmlspecialchars($task['task_img']) : '../assets/placeholder.png' ?>"
                            alt="Task image" class="rounded" style="width:50px; height:35px; object-fit:cover;">
                     </div>
                   </div>

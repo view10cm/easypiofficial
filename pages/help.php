@@ -101,7 +101,7 @@ try {
                                 </div>
                                 <h5 class="fw-bold mb-2" style="color:#333;">Account Settings</h5>
                                 <p class="text-muted mb-3">Customize your profile, notifications, and preferences</p>
-                                <a href="#" class="btn btn-sm rounded-pill"
+                                <a href="../pages/settings.php" class="btn btn-sm rounded-pill"
                                     style="background:#17a2b8; color:white; padding:8px 20px;">View Settings</a>
                             </div>
                         </div>
@@ -119,7 +119,7 @@ try {
                                 <h5 class="fw-bold mb-2" style="color:#333;">Contact Support</h5>
                                 <p class="text-muted mb-3">Get direct help from our support team for technical issues
                                 </p>
-                                <a href="#" class="btn btn-sm rounded-pill"
+                                <a href="../pages/contact_us.php" class="btn btn-sm rounded-pill"
                                     style="background:#17a2b8; color:white; padding:8px 20px;">Contact Us</a>
                             </div>
                         </div>
