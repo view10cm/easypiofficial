@@ -26,7 +26,7 @@ try {
     $email = htmlspecialchars($user['email'], ENT_QUOTES, 'UTF-8');
     $profilePicture = !empty($user['profile_picture'])
         ? '../uploads/' . htmlspecialchars($user['profile_picture'], ENT_QUOTES, 'UTF-8')
-        : '../assets/img/placeholder.png';
+        : '../assets/default_pp.jpg';
 
 } catch (PDOException $e) {
     // On DB error, redirect to sign-in
@@ -141,9 +141,11 @@ function getDashOffset($percent) {
                                             <?php if (!empty($tasks)): ?>
                                                 <?php foreach ($tasks as $task): ?>
                                                     <?php
-                                                        $imgPath = !empty($task['task_img']) 
-                                                            ? '../uploads/' . htmlspecialchars($task['task_img'], ENT_QUOTES, 'UTF-8') 
-                                                            : '../assets/img/placeholder.png';
+                                                        // Fix image path logic to match the task upload structure
+                                                        $isUploadedImage = !empty($task['task_img']) && strpos($task['task_img'], 'task_') === 0;
+                                                        $imgPath = $isUploadedImage
+                                                            ? '../uploads/tasks/' . htmlspecialchars($task['task_img'], ENT_QUOTES, 'UTF-8')
+                                                            : '../assets/' . htmlspecialchars($task['task_img'] ?: 'working.png', ENT_QUOTES, 'UTF-8');
 
                                                         $statusColor = $statusColors[$task['status_name']] ?? '#6c757d';
                                                     ?>
@@ -229,9 +231,11 @@ function getDashOffset($percent) {
             <?php if (!empty($completedTasks)): ?>
                 <?php foreach ($completedTasks as $task): ?>
                     <?php
-                        $imgPath = !empty($task['task_img']) 
-                            ? '../uploads/' . htmlspecialchars($task['task_img'], ENT_QUOTES, 'UTF-8') 
-                            : '../assets/img/placeholder.png';
+                        // Fix image path logic for completed tasks
+                        $isUploadedImage = !empty($task['task_img']) && strpos($task['task_img'], 'task_') === 0;
+                        $imgPath = $isUploadedImage
+                            ? '../uploads/tasks/' . htmlspecialchars($task['task_img'], ENT_QUOTES, 'UTF-8')
+                            : '../assets/' . htmlspecialchars($task['task_img'] ?: 'working.png', ENT_QUOTES, 'UTF-8');
 
                         // Format time difference
                         $daysAgo = floor((time() - strtotime($task['task_due_date'])) / 86400);
