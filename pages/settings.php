@@ -132,29 +132,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_picture'])) {
                 $destPath = $uploadDir . $newFileName;
 
                 if (move_uploaded_file($fileTmpPath, $destPath)) {
-                    // Resize image based on user selection
-                    $resizeOption = $_POST['resize_options'];
-                    if ($resizeOption !== 'original') {
-                        list($width, $height) = getimagesize($destPath);
-                        $newWidth = $resizeOption === 'small' ? 100 : ($resizeOption === 'medium' ? 300 : 500);
-                        $newHeight = $newWidth; // Assuming square resize
-
-                        $imageResource = imagecreatefromstring(file_get_contents($destPath));
-                        $resizedImage = imagecreatetruecolor($newWidth, $newHeight);
-                        imagecopyresampled($resizedImage, $imageResource, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
-
-                        if ($fileType === 'image/jpeg') {
-                            imagejpeg($resizedImage, $destPath);
-                        } elseif ($fileType === 'image/png') {
-                            imagepng($resizedImage, $destPath);
-                        } elseif ($fileType === 'image/gif') {
-                            imagegif($resizedImage, $destPath);
-                        }
-
-                        imagedestroy($imageResource);
-                        imagedestroy($resizedImage);
-                    }
-
                     // Update profile picture in the database
                     $updateStmt = $pdo->prepare("UPDATE accounts SET profile_picture = :profile_picture WHERE account_id = :id");
                     $updateStmt->execute([
